@@ -16,7 +16,8 @@ public class PipelineSimulator {
     IdExStage idEx;
     ExMemStage exMem;
     MemWbStage memWb;
-
+    int[] regFile = new int[32];
+    
     int breakAddress = -1;
     boolean quietMode = true;
     int instExec = 0;
