@@ -67,50 +67,57 @@ public class ExMemStage {
     	// ALU
     	switch(opcode) {
     	case Instruction.INST_ADD:
-    		
-    	case Instruction.INST_SUB:
-    		
-    	case Instruction.INST_MUL:
-    		
-    	case Instruction.INST_DIV:
-    		
-    	case Instruction.INST_AND:
-    		
-    	case Instruction.INST_OR:
-    		
-    	case Instruction.INST_XOR:
-    		
     	case Instruction.INST_ADDI:
-    		
-    	case Instruction.INST_ANDI:
-    		
-    	case Instruction.INST_ORI:
-    		
-    	case Instruction.INST_XORI:
-    		
-    	case Instruction.INST_SLL:
-    		
-    	case Instruction.INST_SRL:
-    		
-    	case Instruction.INST_SRA:
-    		
-    	case Instruction.INST_LW:
-    		
     	case Instruction.INST_SW:
-    		aluIntData = simulator.idEx.regBData + simulator.idEx.immediate;
-    		
+    	case Instruction.INST_LW:
+    		aluIntData = operand1 + operand2;
+    		break;
+    	case Instruction.INST_SUB:
+    	case Instruction.INST_ANDI:
+    		aluIntData = operand1 - operand2; 
+    		break;
+    	case Instruction.INST_MUL:
+    		aluIntData = operand1 * operand2;
+    		break;
+    	case Instruction.INST_DIV:
+    		aluIntData = operand1 / operand2;
+    		break;
+    	case Instruction.INST_AND:
+    		aluIntData = operand1 & operand2;
+    		break;
+    	case Instruction.INST_OR:
+    	case Instruction.INST_ORI:
+    		aluIntData = operand1 | operand2;
+    		break;
+    	case Instruction.INST_XOR:
+    	case Instruction.INST_XORI:
+    		aluIntData = operand1 ^ operand2;    		
+    		break;
+    	case Instruction.INST_SLL:
+    		aluIntData = operand1 << operand2;
+    		break;
+    	case Instruction.INST_SRL:
+    		aluIntData = operand1 >>> operand2;
+    		break;
+    	case Instruction.INST_SRA:
+    		aluIntData = operand1 >> operand2;
+    		break;    		
     	case Instruction.INST_BEQ:
-		
     	case Instruction.INST_BNE:
     	case Instruction.INST_BLEZ:
     	case Instruction.INST_BLTZ:
     	case Instruction.INST_BGEZ:
     	case Instruction.INST_BGTZ:
     	case Instruction.INST_J:
+    		aluIntData = operand1 + operand2;
+    		break;
     	case Instruction.INST_JAL:
     	case Instruction.INST_JALR:
+    		aluIntData = operand1;
+    		break;
     	case Instruction.INST_JR:
-    		
+    		aluIntData = operand1;
+    		break;
     	
     	}
     
