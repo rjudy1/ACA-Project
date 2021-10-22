@@ -8,12 +8,13 @@ public class IfIdStage {
 
   public IfIdStage(PipelineSimulator sim) {
     simulator = sim;
-
   }
 
   public void update() {
-	  // if not hazarded
+	  // if not hazarded ----
 	  // getinstrataddr()
-	  // resolve branch
+	  instPC = simulator.pc.getPC()+4;
+	  Instruction instr = simulator.memory.getInstAtAddr(instPC);
+	  opcode = instr.getOpcode();
   }
 }
