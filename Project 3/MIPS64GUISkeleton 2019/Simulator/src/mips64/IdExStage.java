@@ -26,17 +26,13 @@ public class IdExStage {
     	// fetch the operands
     	// check for stalling
     	// figure out type of instruction and put into pipeline
-    	if (opcode instanceof ITypeInst) {
-    		
-    	} else if (instanceof(JTypeInst)) {
-    		
-    	} else if (instanceof(RTypeInst)) {
-    		
-    	}
     	
-    	// check branch
-    	if (opcode == Instruction.INST_BEQZ ..) {
-    		
-    	}    	
+    	
+    	instPC = simulator.ifId.instPC;
+    	regAData = simulator.regFile[simulator.ifId.op1];
+    	regBData = simulator.regFile[simulator.ifId.op2];
+    	immediate = simulator.ifId.immediate;
+    	destReg = simulator.ifId.destReg;
+    	
     }
 }
