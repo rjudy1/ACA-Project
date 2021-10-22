@@ -12,7 +12,6 @@ public class ExMemStage {
     int destReg;
     boolean branchTaken = false;
     
-    
     public ExMemStage(PipelineSimulator sim) {
         simulator = sim;
     }
@@ -37,18 +36,31 @@ public class ExMemStage {
     	else {
     		operand1 = simulator.idEx.regAData;
     	}
+
     	
     	// assume comparator to zero available for branches
     	switch(opcode) {
     	case Instruction.INST_BEQ:	
     		branchTaken = simulator.idEx.regAData == 0;
+    		break;
     	case Instruction.INST_BNE:
-    		branchTaken = simulator.idEx.regAData == 0;
+    		branchTaken = simulator.idEx.regAData != 0;
+    		break;
     	case Instruction.INST_BLEZ:
+    		branchTaken = simulator.idEx.regAData < 0;
+    		break;
     	case Instruction.INST_BLTZ:
+    		branchTaken = simulator.idEx.regAData <= 0;
+    		break;
     	case Instruction.INST_BGEZ:
+    		branchTaken = simulator.idEx.regAData > 0;
+    		break;
     	case Instruction.INST_BGTZ:
+    		branchTaken = simulator.idEx.regAData >= 0;
+    		break;
     	}
+    	
+    	simulator.idEx.shouldWriteback = !branchTaken;
     	
     	
     	
@@ -101,6 +113,11 @@ public class ExMemStage {
     		
     	
     	}
+    
+    	instPC = simulator.idEx.instPC;
+    	destReg = simulator.idEx.destReg;
+    	storeIntData = simulator.idEx.regBData;
     	
+    
     }
 }
