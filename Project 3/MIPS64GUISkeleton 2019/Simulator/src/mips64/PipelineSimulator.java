@@ -43,6 +43,11 @@ public class PipelineSimulator {
         memory = null;
         isMemoryLoaded = false;
       }
+
+      for (int i = 0; i < 32; i++) {
+    	  regFile[i] = 0;
+      }
+
       reset();
     }
 
@@ -215,8 +220,6 @@ public class PipelineSimulator {
     public void loadMemoryGUI(String fileName) {
 
       try {
-        
-
         memory = new MemoryModel(fileName);
         isMemoryLoaded = true;
         //reset();

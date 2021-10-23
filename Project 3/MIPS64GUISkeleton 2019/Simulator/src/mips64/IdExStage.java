@@ -4,12 +4,12 @@ public class IdExStage {
 
     PipelineSimulator simulator;
     boolean shouldWriteback = false;
-    int instPC;
-    int opcode;
-    int regAData;
-    int regBData;
-    int immediate;
-    
+    int instPC=-1;
+    int opcode=62;
+    int regAData=-1;
+    int regBData=-1;
+    int immediate=-1;
+    int shamt = 0;
     int destReg;
 
     public IdExStage(PipelineSimulator sim) {
@@ -18,7 +18,7 @@ public class IdExStage {
 
     int getIntRegister(int regNum) {
         // todo - add supporting code
-    	return simulator.memory.getIntDataAtAddr(regNum);
+    	return simulator.regFile[regNum];
 //        return 0;
     }
 
@@ -27,12 +27,17 @@ public class IdExStage {
     	// check for stalling
     	// figure out type of instruction and put into pipeline
     	
-    	
+    	opcode = simulator.ifId.opcode;
     	instPC = simulator.ifId.instPC;
-    	regAData = simulator.regFile[simulator.ifId.op1];
-    	regBData = simulator.regFile[simulator.ifId.op2];
-    	immediate = simulator.ifId.immediate;
     	destReg = simulator.ifId.destReg;
-    	
+    	shamt = simulator.ifId.shamt;
+    	immediate = simulator.ifId.immediate;
+
+   		regAData = simulator.regFile[simulator.ifId.op1];
+       	if (opcode == Instruction.INST_JR || opcode == Instruction.INST_JALR) {
+       		regBData = simulator.regFile[destReg];
+       	} else {
+       		regBData = simulator.regFile[simulator.ifId.op2];
+        }
     }
 }

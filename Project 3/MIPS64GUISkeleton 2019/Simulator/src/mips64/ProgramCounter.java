@@ -27,13 +27,14 @@ public class ProgramCounter {
 	  // need to declare some more values and register for output to be set
 	  // if hazard -----------
 	  // look at book for image
-	  if (simulator.exMem.shouldWriteback && (simulator.exMem.opcode == Instruction.INST_BEQ ||
-			  simulator.exMem.opcode == Instruction.INST_BGEZ || simulator.exMem.opcode == Instruction.INST_BGTZ ||
-			  simulator.exMem.opcode == Instruction.INST_BLEZ || simulator.exMem.opcode == Instruction.INST_BLTZ ||
-			  simulator.exMem.opcode == Instruction.INST_BNE)) {
-		  incrPC();
-	  } else {
+	  if (!simulator.idEx.shouldWriteback ) { // pipeline was nullified by branch or jump
+//		  && (simulator.exMem.opcode == Instruction.INST_BEQ ||
+//				  simulator.exMem.opcode == Instruction.INST_BGEZ || simulator.exMem.opcode == Instruction.INST_BGTZ ||
+//				  simulator.exMem.opcode == Instruction.INST_BLEZ || simulator.exMem.opcode == Instruction.INST_BLTZ ||
+//				  simulator.exMem.opcode == Instruction.INST_BNE)
 		  setPC(simulator.exMem.aluIntData);
+	  } else {
+		  incrPC();
 	  }
   }
 }

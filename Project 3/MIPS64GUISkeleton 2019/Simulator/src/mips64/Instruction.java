@@ -341,7 +341,10 @@ public class Instruction {
       case INST_BLEZ:
       case INST_BGTZ:
       case INST_BGEZ:
-        return ITypeInst.getITypeFromOper(oper, opcode);
+    	  
+      // misplaced as RType?
+
+    	  return ITypeInst.getITypeFromOper(oper, opcode);
 
       case INST_ADD:
       case INST_SUB:
@@ -354,6 +357,7 @@ public class Instruction {
       case INST_SLL:
       case INST_SRL:
       case INST_SRA:
+
       case INST_ADD_S:
       case INST_SUB_S:
       case INST_MUL_S:
@@ -372,14 +376,13 @@ public class Instruction {
 
       case INST_BC1T:
       case INST_BC1F:
-
-        return RTypeInst.getRTypeFromOper(oper, opcode);
+    	  return RTypeInst.getRTypeFromOper(oper, opcode);
 
       case INST_J:
       case INST_JAL:
       case INST_HALT:
       case INST_NOP:
-        return JTypeInst.getJTypeFromOper(oper, opcode);
+    	  return JTypeInst.getJTypeFromOper(oper, opcode);
 
       default:
         throw new MIPSException("GetInstructionFromOper: unexpected opcode");

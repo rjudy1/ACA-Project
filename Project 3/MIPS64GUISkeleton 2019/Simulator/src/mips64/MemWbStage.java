@@ -5,12 +5,12 @@ public class MemWbStage {
     PipelineSimulator simulator;
     boolean halted;
     boolean shouldWriteback = false;
-    int instPC;
-    int opcode;
-    int aluIntData;
-    int loadIntData;
-    int destReg;
-    int storeIntData;
+    int instPC=-1;
+    int opcode=1;
+    int aluIntData=0;
+    int loadIntData=-1;
+    int destReg=0;
+    int storeIntData=-1;
     
     // Duplicate variables
     boolean shouldWriteback1 = false;
@@ -27,18 +27,21 @@ public class MemWbStage {
     }
 
     public void update() {
-    	if (shouldWriteback && opcode==Instruction.INST_HALT) {
-    		halted = true;
-    	}
-    	else if (shouldWriteback) {
-    		if(opcode==Instruction.INST_LW) {
+    	if (shouldWriteback) {
+    		if ( opcode==Instruction.INST_HALT) {
+    			halted = true;
+    		}
+   			else if(opcode==Instruction.INST_LW) {
     			loadIntData = simulator.memory.getIntDataAtAddr(aluIntData);
     			simulator.regFile[destReg] = loadIntData;
     		}
     		else if (opcode==Instruction.INST_SW) {	
-    			simulator.memory.setIntDataAtAddr(aluIntData, storeIntData);    		
+    			simulator.memory.setIntDataAtAddr(aluIntData, simulator.exMem.storeIntData);    		
     		}
-    		// Anything thats not a load or store
+    		else if (opcode ==Instruction.INST_JALR || opcode == Instruction.INST_JAL)
+    			simulator.regFile[destReg] = simulator.exMem.instPC;
+    		
+    		// Anything thats not a memory op, halt, or jump and link
     		else {
     			simulator.regFile[destReg] = aluIntData;
     		}
@@ -55,5 +58,6 @@ public class MemWbStage {
     	opcode = simulator.exMem.opcode;
     	aluIntData= simulator.exMem.aluIntData;
     	storeIntData = simulator.exMem.storeIntData;
+    	destReg = simulator.exMem.destReg;
     }
 }
