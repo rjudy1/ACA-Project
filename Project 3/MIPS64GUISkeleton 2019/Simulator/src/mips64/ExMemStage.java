@@ -22,31 +22,61 @@ public class ExMemStage {
     	if (!simulator.interlock) {
 	    	instPC = simulator.idEx.instPC;
 	    	destReg = simulator.idEx.destReg;
-	    	storeIntData = simulator.idEx.regBData;
+	    	
 	    	opcode = simulator.idEx.opcode;
     	}
     	
+    	int comp1 = 0;
+    	int comp2 = 0;
+    	
+		if (simulator.idEx.regA == simulator.memWb.destReg && simulator.memWb.opcode != Instruction.INST_LW
+				&& simulator.memWb.opcode != Instruction.INST_NOP) {
+				comp1 = simulator.memWb.aluIntData;
+		} else if (simulator.idEx.regA == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP) {
+    		if (simulator.memWb.opcode1 == Instruction.INST_LW) {
+    			comp1 = simulator.memWb.loadIntData1; // grabbing the just loaded data
+    		} else {
+    			comp1 = simulator.memWb.aluIntData1; 
+    		}
+    	} else {    		
+    		comp1 = simulator.idEx.regAData;
+    	}
+		
+		if (simulator.idEx.regB == simulator.memWb.destReg && simulator.memWb.opcode != Instruction.INST_LW
+				&& simulator.memWb.opcode != Instruction.INST_NOP) {
+				comp2 = simulator.memWb.aluIntData;
+		} else if (simulator.idEx.regB == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP) {
+    		if (simulator.memWb.opcode1 == Instruction.INST_LW) {
+    			comp2 = simulator.memWb.loadIntData1; // grabbing the just loaded data
+    		} else {
+    			comp2 = simulator.memWb.aluIntData1; 
+    		}
+    	} else {    		
+    		comp2 = simulator.idEx.regBData;
+    	}
+		storeIntData = comp2;
+
     	
     	// assume comparator to zero available for branches
     	switch(opcode) {
     	case Instruction.INST_BEQ:	
-    		branchTaken = simulator.idEx.regAData == simulator.idEx.regBData;
+    		branchTaken = comp1 == comp2;
     		break;
     	// mux choosing between 0 and regB based on whether its a branch or branch equal
     	case Instruction.INST_BNE:
-    		branchTaken = simulator.idEx.regAData != simulator.idEx.regBData;
+    		branchTaken = comp1 != comp2;
     		break;
     	case Instruction.INST_BLEZ:
-    		branchTaken = simulator.idEx.regAData < 0;
+    		branchTaken = comp1 <= 0;
     		break;
     	case Instruction.INST_BLTZ:
-    		branchTaken = simulator.idEx.regAData <= 0;
+    		branchTaken = comp1 < 0;
     		break;
     	case Instruction.INST_BGEZ:
-    		branchTaken = simulator.idEx.regAData > 0;
+    		branchTaken = comp1 >= 0;
     		break;
     	case Instruction.INST_BGTZ:
-    		branchTaken = simulator.idEx.regAData >= 0;
+    		branchTaken = comp1 > 0;
     		break;
     	case Instruction.INST_J:
     	case Instruction.INST_JAL:
@@ -72,7 +102,6 @@ public class ExMemStage {
 				|| opcode == Instruction.INST_JR)
       			&& simulator.idEx.shouldWriteback && !simulator.interlock;
     	
-      	
     	int operand1 = 0;
     	int operand2 = 0;
     	
@@ -129,7 +158,7 @@ public class ExMemStage {
         		operand2 = simulator.idEx.regBData;
         	}
     	}
-    	
+      	
     	// ALU
     	switch(opcode) {
     	case Instruction.INST_ADD:
