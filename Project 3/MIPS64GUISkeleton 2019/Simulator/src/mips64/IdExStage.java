@@ -9,7 +9,6 @@ public class IdExStage {
     int regAData=-1;
     int regBData=-1;
     int immediate=-1;
-    int shamt = 0;
     int destReg=32;
     int regA;
     int regB;
@@ -30,7 +29,6 @@ public class IdExStage {
 	    	opcode = simulator.ifId.opcode;
 	    	instPC = simulator.ifId.instPC;
 	    	destReg = simulator.ifId.destReg;
-	    	shamt = simulator.ifId.shamt;
 	    	immediate = simulator.ifId.immediate;
 	    	shouldWriteback = simulator.ifId.shouldWriteback & !simulator.exMem.branchTaken;
     	}

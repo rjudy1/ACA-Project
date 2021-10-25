@@ -22,7 +22,6 @@ public class ExMemStage {
     	if (!simulator.interlock) {
 	    	instPC = simulator.idEx.instPC;
 	    	destReg = simulator.idEx.destReg;
-	    	
 	    	opcode = simulator.idEx.opcode;
     	}
     	
@@ -30,9 +29,10 @@ public class ExMemStage {
     	int comp2 = 0;
     	
 		if (simulator.idEx.regA == simulator.memWb.destReg && simulator.memWb.opcode != Instruction.INST_LW
-				&& simulator.memWb.opcode != Instruction.INST_NOP) {
+				&& simulator.memWb.opcode != Instruction.INST_NOP && simulator.memWb.shouldWriteback) {
 				comp1 = simulator.memWb.aluIntData;
-		} else if (simulator.idEx.regA == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP) {
+		} else if (simulator.idEx.regA == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP
+				&& simulator.memWb.shouldWriteback1) {
     		if (simulator.memWb.opcode1 == Instruction.INST_LW) {
     			comp1 = simulator.memWb.loadIntData1; // grabbing the just loaded data
     		} else {
@@ -43,10 +43,11 @@ public class ExMemStage {
     	}
 		
 		if (simulator.idEx.regB == simulator.memWb.destReg && simulator.memWb.opcode != Instruction.INST_LW
-				&& simulator.memWb.opcode != Instruction.INST_NOP) {
+				&& simulator.memWb.opcode != Instruction.INST_NOP && simulator.memWb.shouldWriteback) {
 				comp2 = simulator.memWb.aluIntData;
-		} else if (simulator.idEx.regB == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP) {
-    		if (simulator.memWb.opcode1 == Instruction.INST_LW) {
+		} else if (simulator.idEx.regB == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP
+				&& simulator.memWb.shouldWriteback1) {
+    		if (simulator.memWb.opcode1 == Instruction.INST_LW ) {
     			comp2 = simulator.memWb.loadIntData1; // grabbing the just loaded data
     		} else {
     			comp2 = simulator.memWb.aluIntData1; 
@@ -123,9 +124,10 @@ public class ExMemStage {
     		// issue with jumps and loads 
     		// resolve forwarding
     		if (simulator.idEx.regA == simulator.memWb.destReg && simulator.memWb.opcode != Instruction.INST_LW
-    				&& simulator.memWb.opcode != Instruction.INST_NOP) {
+    				&& simulator.memWb.opcode != Instruction.INST_NOP && simulator.memWb.shouldWriteback) {
    				operand1 = simulator.memWb.aluIntData;
-    		} else if (simulator.idEx.regA == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP) {
+    		} else if (simulator.idEx.regA == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP
+    				 && simulator.memWb.shouldWriteback1) {
         		if (simulator.memWb.opcode1 == Instruction.INST_LW) {
         			operand1 = simulator.memWb.loadIntData1; // grabbing the just loaded data
         		} else {
@@ -137,18 +139,17 @@ public class ExMemStage {
     	}
     	
     	// choose operand 2
-    	if (!(currInst instanceof RTypeInst))
-    		operand2 = simulator.idEx.immediate;
-    	else if (opcode == Instruction.INST_SLL || opcode == Instruction.INST_SRA 
+    	if (!(currInst instanceof RTypeInst) || opcode == Instruction.INST_SLL || opcode == Instruction.INST_SRA 
     			|| opcode == Instruction.INST_SRL) {
-    		operand2 = simulator.idEx.shamt;
+    		operand2 = simulator.idEx.immediate;
     	}
     	else {
     		// resolve forwarding
     		if (simulator.idEx.regB == simulator.memWb.destReg && simulator.memWb.opcode != Instruction.INST_LW
-    				&& simulator.memWb.opcode != Instruction.INST_NOP) {
+    				&& simulator.memWb.opcode != Instruction.INST_NOP && simulator.memWb.shouldWriteback) {
     			operand2 = simulator.memWb.aluIntData;
-    		} else if (simulator.idEx.regB == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP) {
+    		} else if (simulator.idEx.regB == simulator.memWb.destReg1 && simulator.memWb.opcode1 != Instruction.INST_NOP
+    				 && simulator.memWb.shouldWriteback1) {
         		if (simulator.memWb.opcode1 == Instruction.INST_LW) {
         			operand2 = simulator.memWb.loadIntData1;
         		} else {

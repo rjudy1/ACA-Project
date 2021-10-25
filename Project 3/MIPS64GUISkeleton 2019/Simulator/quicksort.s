@@ -140,12 +140,17 @@ JR R31
 NOP
 End Assembly
 Begin Data 4000 980
+10
+4
 5
+2
+0
+-5
+20
+51
+-5
 34
 23
-4
--42
-7
 End Data
 -- stack
 Begin Data 5000 400

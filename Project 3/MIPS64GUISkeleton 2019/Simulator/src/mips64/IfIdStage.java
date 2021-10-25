@@ -28,6 +28,7 @@ public class IfIdStage {
 		  op1 = ((RTypeInst) instr).rs;
 		  op2 = ((RTypeInst) instr).rt;
 		  destReg = ((RTypeInst) instr).rd;
+		  immediate =((RTypeInst) instr).shamt;;
 		  shamt = ((RTypeInst) instr).shamt;
 	  }
 	  else if (instr instanceof ITypeInst) {
