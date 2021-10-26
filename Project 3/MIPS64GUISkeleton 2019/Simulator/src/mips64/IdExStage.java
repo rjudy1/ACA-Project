@@ -3,7 +3,7 @@
  *  Date: 11/2/21
  *  Id/Ex Pipeline Stage
  *  
- *  Description: 
+ *  Description: This is the Id/Ex stage of the pipeline. Its main purpose is to implement the register file.
  */
 package mips64;
 

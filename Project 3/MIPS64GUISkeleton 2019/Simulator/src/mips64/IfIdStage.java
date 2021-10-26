@@ -1,3 +1,12 @@
+/*
+ *  Authors: Rachel Judy and Aaron Johnston
+ *  Date: 11/2/21
+ *  If/Id Pipeline Stage
+ *  
+ *  Description: This is the IF/ID stage of the pipeline. 
+ *  			 The main purpose of this file is to parse the instructions and output the right values, depedent on instruction type
+ *  
+ */
 package mips64;
 
 public class IfIdStage {

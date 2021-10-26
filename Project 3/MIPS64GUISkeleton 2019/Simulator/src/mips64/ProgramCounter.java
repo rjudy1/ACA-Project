@@ -1,3 +1,11 @@
+/*
+ *  Authors: Rachel Judy and Aaron Johnston
+ *  Date: 11/2/21
+ *  Pipeline Program Counter  
+ *  
+ *  Description: This is the program counter for the pipeline
+ *  			 When not interlocked, the program counter increments. If a branch is taken, we set the PC to the right value.
+ */
 package mips64;
 
 public class ProgramCounter {

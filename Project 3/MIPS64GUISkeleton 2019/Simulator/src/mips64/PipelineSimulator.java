@@ -1,3 +1,11 @@
+/*
+ *  Authors: Rachel Judy and Aaron Johnston
+ *  Date: 11/2/21
+ *  Pipeline Simulator
+ *  
+ *  Description: Our additions to this file included the regFile and interlock boolean.
+ *  			 
+ */
 package mips64;
 
 import java.io.*;
