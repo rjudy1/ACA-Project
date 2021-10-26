@@ -1,3 +1,12 @@
+/*
+ *  Authors: Rachel Judy and Aaron Johnston
+ *  Date: 11/2/21
+ *  Ex/Mem Pipeline Stage
+ *  
+ *  Description: This is the Ex/Mem stage of the pipeline. 
+ *  			 This file implements branch resolution, the ALU, as well as forwarding.
+ */
+
 package mips64;
 
 public class ExMemStage {

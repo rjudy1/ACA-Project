@@ -1,3 +1,10 @@
+/*
+ *  Authors: Rachel Judy and Aaron Johnston
+ *  Date: 11/2/21
+ *  Id/Ex Pipeline Stage
+ *  
+ *  Description: 
+ */
 package mips64;
 
 public class IdExStage {
