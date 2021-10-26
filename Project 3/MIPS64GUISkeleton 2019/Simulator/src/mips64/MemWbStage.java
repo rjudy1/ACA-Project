@@ -44,6 +44,8 @@ public class MemWbStage {
     	aluIntData= simulator.exMem.aluIntData;
     	storeIntData = simulator.exMem.storeIntData;
     	destReg = simulator.exMem.destReg;
+
+    	// do the memory operation
     	if (shouldWriteback) {
 	    	if (opcode == Instruction.INST_LW) {
 	    		loadIntData = simulator.memory.getIntDataAtAddr(aluIntData);
@@ -52,6 +54,7 @@ public class MemWbStage {
 	    	}
     	}
     	
+    	// do the write back operation on the ahead ones
     	if (shouldWriteback1) {
     		if ( opcode1==Instruction.INST_HALT) {
     			halted = true;
@@ -67,28 +70,6 @@ public class MemWbStage {
     		else {	// Anything thats not a memory op, halt, or jump and link
     			simulator.regFile[destReg1] = aluIntData1;
     		}
-	
     	}
-//    	
-//    	if (shouldWriteback) {
-//    		if ( opcode==Instruction.INST_HALT) {
-//    			halted = true;
-//    		}
-//   			else if(opcode==Instruction.INST_LW) {
-//    			loadIntData = simulator.memory.getIntDataAtAddr(aluIntData);
-//    			simulator.regFile[destReg] = loadIntData; // occurs after mem
-//    		}
-//    		else if (opcode==Instruction.INST_SW) {	
-//    			simulator.memory.setIntDataAtAddr(aluIntData, storeIntData);    		
-//    		}
-//    		else if (opcode ==Instruction.INST_JALR || opcode == Instruction.INST_JAL)
-//    			simulator.regFile[destReg] = simulator.idEx.instPC;
-//    		
-//    		// Anything thats not a memory op, halt, or jump and link
-//    		else {
-//    			simulator.regFile[destReg] = aluIntData;
-//    		}
-//    	}
-
     }
 }

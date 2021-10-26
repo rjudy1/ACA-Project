@@ -25,9 +25,9 @@ public class ExMemStage {
 	    	opcode = simulator.idEx.opcode;
     	}
     	
+    	// choose compare 1 and 2 operands based on forwarding
     	int comp1 = 0;
     	int comp2 = 0;
-    	
 		if (simulator.idEx.regA == simulator.memWb.destReg && simulator.memWb.opcode != Instruction.INST_LW
 				&& simulator.memWb.opcode != Instruction.INST_NOP && simulator.memWb.shouldWriteback) {
 				comp1 = simulator.memWb.aluIntData;
@@ -55,9 +55,10 @@ public class ExMemStage {
     	} else {    		
     		comp2 = simulator.idEx.regBData;
     	}
+
+		// data to be stored will always be either the register or the forwarded data
 		storeIntData = comp2;
 
-    	
     	// assume comparator to zero available for branches
     	switch(opcode) {
     	case Instruction.INST_BEQ:	
@@ -102,17 +103,18 @@ public class ExMemStage {
 				|| opcode == Instruction.INST_NOP  || opcode == Instruction.INST_J
 				|| opcode == Instruction.INST_JR)
       			&& simulator.idEx.shouldWriteback && !simulator.interlock;
-    	
-    	int operand1 = 0;
-    	int operand2 = 0;
-    	
-    	Instruction currInst = Instruction.getInstructionFromName(
-    					Instruction.getNameFromOpcode(opcode));
-    	// only case where we need to stall and not move the previous instructions
+    
+    	// only case where we need to stall and not move the previous instructions 
+      	// is when valid lw is one ahead and didn't get previously handled
     	simulator.interlock = (simulator.ifId.op1 == destReg || simulator.ifId.op2 == destReg) 
     			&& opcode == Instruction.INST_LW && !simulator.interlock 
-    			&& simulator.ifId.opcode != Instruction.INST_NOP;
-    	
+    			&& simulator.ifId.opcode != Instruction.INST_NOP && shouldWriteback;
+
+    	int operand1 = 0;
+    	int operand2 = 0;    	
+    	Instruction currInst = Instruction.getInstructionFromName(
+    					Instruction.getNameFromOpcode(opcode));
+
     	if (opcode == Instruction.INST_BEQ || opcode == Instruction.INST_BNE
     			|| opcode == Instruction.INST_BLEZ || opcode == Instruction.INST_BLTZ
     			|| opcode == Instruction.INST_BLTZ || opcode == Instruction.INST_BLEZ
@@ -121,8 +123,7 @@ public class ExMemStage {
     		operand1 = simulator.ifId.instPC;
     	}
     	else {
-    		// issue with jumps and loads 
-    		// resolve forwarding
+    		// resolve forwarding one ahead and two ahead and whether 
     		if (simulator.idEx.regA == simulator.memWb.destReg && simulator.memWb.opcode != Instruction.INST_LW
     				&& simulator.memWb.opcode != Instruction.INST_NOP && simulator.memWb.shouldWriteback) {
    				operand1 = simulator.memWb.aluIntData;
@@ -210,7 +211,7 @@ public class ExMemStage {
     		break;
     	case Instruction.INST_JALR:
     	case Instruction.INST_JR:
-    		aluIntData = operand1;
+    		aluIntData = operand1; // register value
     		break;
     	}    
     }

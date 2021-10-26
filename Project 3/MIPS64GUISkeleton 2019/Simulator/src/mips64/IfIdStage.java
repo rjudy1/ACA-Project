@@ -17,13 +17,14 @@ public class IfIdStage {
   }
 
   public void update() {
+	  // keep everything in place if interlocked
 	  if (!simulator.interlock) {
 		  instPC = simulator.pc.getPC();
 	  }		  
 
 	  Instruction instr = simulator.memory.getInstAtAddr(instPC);
 	  opcode = instr.getOpcode();
-  
+	  // based on instruction type, pass through the correct register values
 	  if (instr instanceof RTypeInst) {
 		  op1 = ((RTypeInst) instr).rs;
 		  op2 = ((RTypeInst) instr).rt;
@@ -44,6 +45,5 @@ public class IfIdStage {
 	  
 	  // writes back if not one of the instructions that gets written back + two ahead not a taken branch handled up there
 	  shouldWriteback = !simulator.exMem.branchTaken;
-	  
   }
 }

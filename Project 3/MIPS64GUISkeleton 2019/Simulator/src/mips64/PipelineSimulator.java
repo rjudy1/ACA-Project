@@ -16,6 +16,7 @@ public class PipelineSimulator {
     IdExStage idEx;
     ExMemStage exMem;
     MemWbStage memWb;
+    // add register file and interlock
     int[] regFile = new int[32];
     boolean interlock = false;
     
