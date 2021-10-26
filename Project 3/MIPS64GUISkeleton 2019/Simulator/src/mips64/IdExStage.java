@@ -30,8 +30,7 @@ public class IdExStage {
 
     public void update() {
     	// fetch the operands
-    	// check for stalling
-    	// figure out type of instruction and put into pipeline
+    	// hold register values if no interlock
     	if (!simulator.interlock) {
 	    	opcode = simulator.ifId.opcode;
 	    	instPC = simulator.ifId.instPC;
@@ -43,6 +42,7 @@ public class IdExStage {
    		regAData = simulator.regFile[simulator.ifId.op1];
     	regA = simulator.ifId.op1;
 
+    	// jumps use dest reg 
        	if (opcode == Instruction.INST_JR || opcode == Instruction.INST_JALR || opcode == Instruction.INST_SW) {
        		regBData = simulator.regFile[destReg];
 	    	regB = destReg;
