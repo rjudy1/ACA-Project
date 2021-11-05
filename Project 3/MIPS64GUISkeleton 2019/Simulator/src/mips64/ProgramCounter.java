@@ -32,14 +32,8 @@ public class ProgramCounter {
 
   public void update() {
 	  // if not a branch, increment, if it is a branch, fetch from ID stage
-	  // need to declare some more values and register for output to be set
-	  // if hazard -----------
-	  // look at book for image
-	  if (!simulator.interlock && simulator.exMem.branchTaken) { // pipeline was nullified by branch or jump
-//		  && (simulator.exMem.opcode == Instruction.INST_BEQ ||
-//				  simulator.exMem.opcode == Instruction.INST_BGEZ || simulator.exMem.opcode == Instruction.INST_BGTZ ||
-//				  simulator.exMem.opcode == Instruction.INST_BLEZ || simulator.exMem.opcode == Instruction.INST_BLTZ ||
-//				  simulator.exMem.opcode == Instruction.INST_BNE)
+	  if (!simulator.interlock && simulator.exMem.branchTaken) { 
+		  // pipeline was nullified by branch or jump
 		  setPC(simulator.exMem.aluIntData);
 	  } else if (!simulator.interlock && pc < simulator.memory.maxCodeAddress*4) {
 		  incrPC();
