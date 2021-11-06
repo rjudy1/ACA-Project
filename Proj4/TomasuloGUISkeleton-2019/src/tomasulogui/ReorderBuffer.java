@@ -71,6 +71,7 @@ public class ReorderBuffer {
     // check entire CDB for someone waiting on this data
     // could be destination reg
     // could be store address source
+	  // check CDB destination register done or address source done
 
     // TODO body of method
   }
