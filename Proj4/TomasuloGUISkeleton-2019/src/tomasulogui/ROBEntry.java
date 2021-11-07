@@ -45,6 +45,8 @@ public class ROBEntry {
 
   public void setBranchTaken(boolean result) {
   // TODO - maybe more than simple set
+	  // get actual results
+	  // get new pc loaded, set flag?
   }
 
   public int getWriteReg() {
@@ -67,7 +69,9 @@ public class ROBEntry {
     // of the project.  It does 2 things:
     // 1. update the instruction, as shown in 2nd line of code above
     // 2. update the fields of the ROBEntry, as shown in the 1st line of code above
-
+    
+    // does this just mean check if the register is updated/ anyone ahead will change and give it a tag?
+    
   }
 
 }

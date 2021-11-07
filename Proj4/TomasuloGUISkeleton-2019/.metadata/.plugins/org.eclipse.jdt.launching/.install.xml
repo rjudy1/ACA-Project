@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <dirs>
+<<<<<<< HEAD
     <entry loc="/Library/Java/JavaVirtualMachines/jdk-12.0.2.jdk/Contents/Home" stamp="1567038777160"/>
     <entry loc="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home" stamp="1614197829799"/>
+=======
+    <entry loc="C:\Program Files\Java\jdk-14.0.2" stamp="1597454189591"/>
+>>>>>>> 1028c07f934276a5e79118a91022a01b412390be
 </dirs>

@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 eclipse.preferences.version=1
 org.eclipse.jdt.ui.formatterprofiles.version=21
+=======
+content_assist_proposals_background=255,255,255
+content_assist_proposals_foreground=0,0,0
+eclipse.preferences.version=1
+org.eclipse.jdt.ui.formatterprofiles.version=20
+>>>>>>> 1028c07f934276a5e79118a91022a01b412390be
 spelling_locale_initialized=true
 useAnnotationsPrefPage=true
 useQuickDiffPrefPage=true

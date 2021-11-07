@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <libraryInfos>
+<<<<<<< HEAD
     <libraryInfo home="/Library/Java/JavaVirtualMachines/jdk-12.0.2.jdk/Contents/Home" version="12.0.2"/>
     <libraryInfo home="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home" version="1.8.0_281">
         <bootpath>
@@ -24,4 +25,7 @@
             <entry path="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/lib/endorsed"/>
         </endorsedDirs>
     </libraryInfo>
+=======
+    <libraryInfo home="C:\Program Files\Java\jdk-14.0.2" version="14.0.2"/>
+>>>>>>> 1028c07f934276a5e79118a91022a01b412390be
 </libraryInfos>

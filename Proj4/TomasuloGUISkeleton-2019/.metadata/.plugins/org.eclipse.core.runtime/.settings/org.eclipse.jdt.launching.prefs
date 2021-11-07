@@ -1,2 +1,6 @@
 eclipse.preferences.version=1
+<<<<<<< HEAD
 org.eclipse.jdt.launching.PREF_VM_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<vmSettings defaultVM\="52,org.eclipse.jdt.internal.launching.macosx.MacOSXType26,com.oracle.java.12.0.2.jdk" defaultVMConnector\="">\n    <vmType id\="org.eclipse.jdt.internal.launching.macosx.MacOSXType">\n        <vm id\="com.oracle.java.12.0.2.jdk" name\="Java SE 12.0.2 [12.0.2]" path\="/Library/Java/JavaVirtualMachines/jdk-12.0.2.jdk/Contents/Home"/>\n        <vm id\="com.oracle.java.JavaAppletPlugin" name\="Java [1.8.281.09]" path\="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"/>\n    </vmType>\n</vmSettings>\n
+=======
+org.eclipse.jdt.launching.PREF_VM_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<vmSettings defaultVM\="57,org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType13,1636135466857">\r\n    <vmType id\="org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType">\r\n        <vm id\="1636135466857" name\="jdk-14.0.2" path\="C\:\\Program Files\\Java\\jdk-14.0.2"/>\r\n    </vmType>\r\n</vmSettings>\r\n
+>>>>>>> 1028c07f934276a5e79118a91022a01b412390be

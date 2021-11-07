@@ -6,6 +6,11 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="/Users/Aaron/Documents/Education/SUPER SENIOR COLLEGE/Adv Comp Arch/Projects/Proj3/ACA-Project/Proj4/appframework-1.0.3.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
+=======
+	<classpathentry kind="lib" path="C:/Users/HP/OneDrive/Desktop/ACA-Project/Proj4/TomasuloGUISkeleton-2019/appframework-1.0.3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+>>>>>>> 1028c07f934276a5e79118a91022a01b412390be
 </classpath>
