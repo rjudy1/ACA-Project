@@ -70,6 +70,8 @@ public class ROBEntry {
     // 1. update the instruction, as shown in 2nd line of code above
     // 2. update the fields of the ROBEntry, as shown in the 1st line of code above
     
+    // does this just mean check if the register is updated/ anyone ahead will change and give it a tag?
+    
   }
 
 }

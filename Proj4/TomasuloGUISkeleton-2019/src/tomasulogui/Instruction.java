@@ -58,7 +58,7 @@ public class Instruction {
 
   }
 
-    public static String getNameFromOpcode(int opcode)
+  public static String getNameFromOpcode(int opcode)
   {
       switch(opcode)
       {

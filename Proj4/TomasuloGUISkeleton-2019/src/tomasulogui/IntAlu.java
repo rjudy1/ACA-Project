@@ -1,3 +1,12 @@
+/*
+ * File: 	IntAlu.java
+ * Authors: Aaron Johnston and Rachael Judy
+ * Project: ACA Project 4 - Tomasulo
+ * Notes:   who gets to say calculateResult?
+ * 
+ * 
+ */
+
 package tomasulogui;
 
 public class IntAlu extends FunctionalUnit{

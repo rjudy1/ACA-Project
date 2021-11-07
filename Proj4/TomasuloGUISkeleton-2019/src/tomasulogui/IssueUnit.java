@@ -1,3 +1,12 @@
+/*
+ * File: 	IssueUnit.java
+ * Authors: Aaron Johnston and Rachael Judy
+ * Project: ACA Project 4 - Tomasulo
+ * Notes:   
+ * 
+ * 
+ */
+
 package tomasulogui;
 
 public class IssueUnit {
