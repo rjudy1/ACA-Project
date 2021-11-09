@@ -8,6 +8,23 @@ public abstract class FunctionalUnit {
   boolean requestWriteback = false;
   boolean canWriteback = false;
 
+  public boolean getRequestWriteBack() {
+      return requestWriteback;
+  }
+  
+  public void setRequestWriteback(boolean reqWB) {
+  	requestWriteback = reqWB;
+  }
+  
+  public boolean getCanWriteback() {
+      return canWriteback;
+  }
+  
+  public void setCanWriteback(boolean canWB) {
+  	canWriteback = canWB;
+  }
+  
+
   public FunctionalUnit(PipelineSimulator sim) {
     simulator = sim;
     

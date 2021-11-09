@@ -9,22 +9,6 @@ public class IntMult extends FunctionalUnit {
     public int destVal;
     public int result;
     
-    public void setRequestWriteback(boolean reqWB) {
-    	requestWriteback = reqWB;
-    }
-
-    public boolean getRequestWriteBack() {
-        return requestWriteback;
-    }
-    
-    public void setCanWriteback(boolean canWB) {
-    	canWriteback = canWB;
-    }
-    
-    public boolean getCanWriteback() {
-        return canWriteback;
-    }
-    
     public int getDestTag() {
         return destTag;
     }
