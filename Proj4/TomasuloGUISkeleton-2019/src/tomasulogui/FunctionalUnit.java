@@ -5,7 +5,9 @@ public abstract class FunctionalUnit {
   ReservationStation[] stations = new ReservationStation[2];
   
   int zero = 0;
-  
+  boolean requestWriteback = false;
+  boolean canWriteback = false;
+
   public FunctionalUnit(PipelineSimulator sim) {
     simulator = sim;
     
@@ -13,13 +15,12 @@ public abstract class FunctionalUnit {
 
  
   public void squashAll() {
-    // todo fill in
-	  stations[0].occupied = false;
-	  stations[1].occupied = false;
-	  // turn into nops maybe or unneccessary?
-	  
+  	for (int i = 0; i < 2; i++) {
+  		stations[i] = null;
+  	}
+   	requestWriteback = false;
   }
-
+  
   public abstract int calculateResult(int station);
 
   public abstract int getExecCycles();

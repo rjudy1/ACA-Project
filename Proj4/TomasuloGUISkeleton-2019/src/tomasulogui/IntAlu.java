@@ -9,7 +9,6 @@
 
 package tomasulogui;
 
-import IssuedInst.INST_TYPE;
 
 public class IntAlu extends FunctionalUnit{
   public static final int EXEC_CYCLES = 1;
@@ -23,7 +22,7 @@ public class IntAlu extends FunctionalUnit{
   	requestWriteback = reqWB;
   }
 
-  public int getRequestWriteBack() {
+  public boolean getRequestWriteBack() {
       return requestWriteback;
   }
   
@@ -31,13 +30,13 @@ public class IntAlu extends FunctionalUnit{
   	canWriteback = canWB;
   }
   
-  public int getCanWriteback() {
+  public boolean getCanWriteback() {
       return canWriteback;
   }
   
   public void squashAll() {
   	for (int i = 0; i < 2; i++) {
-  		stations[i] = -1;
+  		stations[i] = null;
   	}
    	requestWriteback = false;
   }
@@ -56,65 +55,66 @@ public class IntAlu extends FunctionalUnit{
     	int operand1 = stations[station].getData1();
     	int operand2 = stations[station].getData2();
     	// ALU 
-    	switch(opcode) {
-    	case Instruction.INST_ADD:
-    	case Instruction.INST_ADDI:
-    	case Instruction.INST_SW:
-    	case Instruction.INST_LW:
+    	switch(stations[station].getFunction()) {
+    	case ADD:
+    	case ADDI:
+    	case STORE:
+    	case LOAD:
     		result = operand1 + operand2;
     		break;
-    	case Instruction.INST_SUB:
-    	case Instruction.INST_ANDI:
+    	case SUB:
+    	case ANDI:
     		result = operand1 - operand2; 
     		break;
-    	case Instruction.INST_AND:
+    	case AND:
     		result = operand1 & operand2;
     		break;
-    	case Instruction.INST_OR:
-    	case Instruction.INST_ORI:
+    	case OR:
+    	case ORI:
     		result = operand1 | operand2;
     		break;
-    	case Instruction.INST_XOR:
-    	case Instruction.INST_XORI:
+    	case XOR:
+    	case XORI:
     		result = operand1 ^ operand2;    		
     		break;
-    	case Instruction.INST_SLL:
+    	case SLL:
     		result = operand1 << operand2;
     		break;
-    	case Instruction.INST_SRL:
+    	case SRL:
     		result = operand1 >>> operand2;
     		break;
-    	case Instruction.INST_SRA:
+    	case SRA:
     		result = operand1 >> operand2;
     		break;    		
-    	// Are these needed?
-    	case Instruction.INST_BEQ:
-    	case Instruction.INST_BNE:
-    	case Instruction.INST_BLEZ:
-    	case Instruction.INST_BLTZ:
-    	case Instruction.INST_BGEZ:
-    	case Instruction.INST_BGTZ:
-    	case Instruction.INST_J:
-    	case Instruction.INST_JAL:
-    		result = operand1 + operand2; // pc + imm
-    		break;
-    	case Instruction.INST_JALR:
-    	case Instruction.INST_JR:
-    		result = operand1; // register value
-    		break;
+//    	case Instruction.INST_BEQ:
+//    	case Instruction.INST_BNE:
+//    	case Instruction.INST_BLEZ:
+//    	case Instruction.INST_BLTZ:
+//    	case Instruction.INST_BGEZ:
+//    	case Instruction.INST_BGTZ:
+//    	case Instruction.INST_J:
+//    	case Instruction.INST_JAL:
+//    		result = operand1 + operand2; // pc + imm
+//    		break;
+//    	case Instruction.INST_JALR:
+//    	case Instruction.INST_JR:
+//    		result = operand1; // register value
+//    		break;
+		default:
+			break;
     	}    
     	requestWriteback = true;
     	destTag = stations[station].getDestTag();
     }
 	// check reservationStations for cdb data
-    if (cdb.getDataValid()) {
+    if (simulator.cdb.getDataValid()) {
         for (int i = 0; i < 2; i++) {
           if (stations[i] != null) {
-            stations[i].snoop(cdb);
+            stations[i].snoop(simulator.cdb);
           }
         }
     }
-	
+	return result;
 
   }
 

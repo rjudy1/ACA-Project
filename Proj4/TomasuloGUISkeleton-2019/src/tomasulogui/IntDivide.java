@@ -13,7 +13,7 @@ public class IntDivide extends FunctionalUnit {
     	requestWriteback = reqWB;
     }
 
-    public int getRequestWriteBack() {
+    public boolean getRequestWriteBack() {
         return requestWriteback;
     }
     
@@ -21,15 +21,8 @@ public class IntDivide extends FunctionalUnit {
     	canWriteback = canWB;
     }
     
-    public int getCanWriteback() {
+    public boolean getCanWriteback() {
         return canWriteback;
-    }
-    
-    public void squashAll() {
-    	for (int i = 0; i < 2; i++) {
-    		stations[i] = -1;
-    	}
-     	requestWriteback = false;
     }
     
     public IntDivide(PipelineSimulator sim) {
@@ -48,21 +41,21 @@ public class IntDivide extends FunctionalUnit {
 	        	destTag = stations[station].getDestTag();
  	    		requestWriteback = true;
  	    		doneFlag = 1;
+ 	    		return result;
  	    	}
  	    	else {
  	    		doneFlag += 1;
- 	    		return -1;
  	    	}
          }
          // check reservationStations for cdb data
-         if (cdb.getDataValid()) {
+         if (simulator.cdb.getDataValid()) {
              for (int i = 0; i < 2; i++) {
                if (stations[i] != null) {
-                 stations[i].snoop(cdb);
+                 stations[i].snoop(simulator.cdb);
                }
              }
          }
-         
+         return -1;
     }
 
     public int getExecCycles() {

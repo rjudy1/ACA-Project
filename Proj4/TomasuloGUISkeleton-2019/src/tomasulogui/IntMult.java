@@ -5,8 +5,6 @@ public class IntMult extends FunctionalUnit {
     public static final int EXEC_CYCLES = 4;
     public int doneFlag = 1;
     
-    boolean requestWriteback = false;
-    boolean canWriteback = false;
     public int destTag;
     public int result;
     
@@ -14,7 +12,7 @@ public class IntMult extends FunctionalUnit {
     	requestWriteback = reqWB;
     }
 
-    public int getRequestWriteBack() {
+    public boolean getRequestWriteBack() {
         return requestWriteback;
     }
     
@@ -22,7 +20,7 @@ public class IntMult extends FunctionalUnit {
     	canWriteback = canWB;
     }
     
-    public int getCanWriteback() {
+    public boolean getCanWriteback() {
         return canWriteback;
     }
     
@@ -32,7 +30,7 @@ public class IntMult extends FunctionalUnit {
 
     public void squashAll() {
     	for (int i = 0; i < 2; i++) {
-    		stations[i] = -1;
+    		stations[i] = null;
     	}
      	requestWriteback = false;
     }
@@ -53,23 +51,21 @@ public class IntMult extends FunctionalUnit {
 	        	result = operand1*operand2;
 	    		requestWriteback = true;
 	    		doneFlag = 1;
+	    		return result;
 	    	}
 	    	else {
 	    		doneFlag += 1;
-	    		return -1;
 	    	}
         }
         // check reservationStations for cdb data
         if (simulator.cdb.getDataValid()) {
             for (int i = 0; i < 2; i++) {
               if (stations[i] != null) {
-                stations[i].snoop(cdb);
+                stations[i].snoop(simulator.cdb);
               }
             }
         }
-        
-        
-        
+        return -1;
     }
 
     
