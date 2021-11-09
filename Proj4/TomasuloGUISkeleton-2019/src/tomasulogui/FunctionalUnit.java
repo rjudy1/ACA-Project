@@ -64,8 +64,6 @@ public abstract class FunctionalUnit {
 	  
   }
 
-
-
   public void acceptIssue(IssuedInst inst) {
   // todo - fill in reservation station (if available) with data from inst
 	  if (!stations[zero].occupied)

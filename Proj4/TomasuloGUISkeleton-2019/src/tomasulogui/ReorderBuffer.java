@@ -69,7 +69,8 @@ public class ReorderBuffer {
     case STORE:
     	// put in memory if not cleared/voided
     	
-    	
+    case HALT:
+    	halted = true;
    	default:
     		
     }
