@@ -9,6 +9,8 @@
 
 package tomasulogui;
 
+import IssuedInst.INST_TYPE;
+
 public class IntAlu extends FunctionalUnit{
   public static final int EXEC_CYCLES = 1;
   
@@ -53,7 +55,7 @@ public class IntAlu extends FunctionalUnit{
     if (!requestWriteback) {
     	int operand1 = stations[station].getData1();
     	int operand2 = stations[station].getData2();
-    	// ALU -- Where do we get OPCODE from..?
+    	// ALU 
     	switch(opcode) {
     	case Instruction.INST_ADD:
     	case Instruction.INST_ADDI:
@@ -101,7 +103,7 @@ public class IntAlu extends FunctionalUnit{
     		result = operand1; // register value
     		break;
     	}    
-    	requestWriteback = True;
+    	requestWriteback = true;
     	destTag = stations[station].getDestTag();
     }
 	// check reservationStations for cdb data

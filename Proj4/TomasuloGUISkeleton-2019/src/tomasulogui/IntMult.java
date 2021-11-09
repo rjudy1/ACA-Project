@@ -51,7 +51,7 @@ public class IntMult extends FunctionalUnit {
 	        	int operand2 = stations[station].getData2();
 	        	destTag = stations[station].getDestTag();
 	        	result = operand1*operand2;
-	    		requestWriteback = True;
+	    		requestWriteback = true;
 	    		doneFlag = 1;
 	    	}
 	    	else {
@@ -60,13 +60,8 @@ public class IntMult extends FunctionalUnit {
 	    	}
         }
         // check reservationStations for cdb data
-<<<<<<< Updated upstream
         if (simulator.cdb.getDataValid()) {
-            for (int i = 0; i < BUFFER_SIZE; i++) {
-=======
-        if (cdb.getDataValid()) {
             for (int i = 0; i < 2; i++) {
->>>>>>> Stashed changes
               if (stations[i] != null) {
                 stations[i].snoop(cdb);
               }

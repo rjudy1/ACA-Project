@@ -46,7 +46,7 @@ public class IntDivide extends FunctionalUnit {
  	        	int operand2 = stations[station].getData2();
  	        	result = operand1/operand2;
 	        	destTag = stations[station].getDestTag();
- 	    		requestWriteback = True;
+ 	    		requestWriteback = true;
  	    		doneFlag = 1;
  	    	}
  	    	else {
