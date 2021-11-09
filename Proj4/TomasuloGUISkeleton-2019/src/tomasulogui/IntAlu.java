@@ -102,20 +102,6 @@ public class IntAlu extends FunctionalUnit{
     	case SRA:
     		destVal = operand1 >> operand2;
     		break;    		
-//    	case Instruction.INST_BEQ:
-//    	case Instruction.INST_BNE:
-//    	case Instruction.INST_BLEZ:
-//    	case Instruction.INST_BLTZ:
-//    	case Instruction.INST_BGEZ:
-//    	case Instruction.INST_BGTZ:
-//    	case Instruction.INST_J:
-//    	case Instruction.INST_JAL:
-//    		result = operand1 + operand2; // pc + imm
-//    		break;
-//    	case Instruction.INST_JALR:
-//    	case Instruction.INST_JR:
-//    		result = operand1; // register value
-//    		break;
 		default:
 			break;
     	}    

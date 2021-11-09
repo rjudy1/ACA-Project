@@ -27,7 +27,6 @@ public abstract class FunctionalUnit {
 
   public FunctionalUnit(PipelineSimulator sim) {
     simulator = sim;
-    
   }
 
  
