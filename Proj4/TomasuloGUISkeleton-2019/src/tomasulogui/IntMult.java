@@ -57,7 +57,7 @@ public class IntMult extends FunctionalUnit {
 	    	}
         }
         // check reservationStations for cdb data
-        if (cdb.getDataValid()) {
+        if (simulator.cdb.getDataValid()) {
             for (int i = 0; i < BUFFER_SIZE; i++) {
               if (stations[i] != null) {
                 stations[i].snoop(cdb);
