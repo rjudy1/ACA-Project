@@ -25,22 +25,6 @@ public class IntMult extends FunctionalUnit {
         return canWriteback;
     }
     
-    public int getDestTag() {
-        return destTag;
-    }
-    
-    public void setDestTag(int dTag) {
-    	destTag = dTag;
-    }
-    
-    public int getDestValue() {
-        return destVal;
-    }
-    
-    public void setDestValue(int dVal) {
-    	destVal = dVal;
-    }
-    
     public IntMult(PipelineSimulator sim) {
         super(sim);
     }
