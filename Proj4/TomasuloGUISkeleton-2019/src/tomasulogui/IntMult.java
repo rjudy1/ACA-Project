@@ -7,6 +7,8 @@ public class IntMult extends FunctionalUnit {
     
     boolean requestWriteback = false;
     boolean canWriteback = false;
+    public int destTag;
+    public int result;
     
     public void setRequestWriteback(boolean reqWB) {
     	requestWriteback = reqWB;
@@ -47,7 +49,8 @@ public class IntMult extends FunctionalUnit {
 	    	if (doneFlag == getExecCycles()) {
 	        	int operand1 = stations[station].getData1();
 	        	int operand2 = stations[station].getData2();
-	        	int result = operand1*operand2;
+	        	destTag = stations[station].getDestTag();
+	        	result = operand1*operand2;
 	    		requestWriteback = True;
 	    		doneFlag = 1;
 	    	}
@@ -57,8 +60,13 @@ public class IntMult extends FunctionalUnit {
 	    	}
         }
         // check reservationStations for cdb data
+<<<<<<< Updated upstream
         if (simulator.cdb.getDataValid()) {
             for (int i = 0; i < BUFFER_SIZE; i++) {
+=======
+        if (cdb.getDataValid()) {
+            for (int i = 0; i < 2; i++) {
+>>>>>>> Stashed changes
               if (stations[i] != null) {
                 stations[i].snoop(cdb);
               }

@@ -38,7 +38,7 @@ public class ReservationStation {
   public int getDestTag() {
     return destTag;
   }
-
+  
   public int getData1() {
     return data1;
   }
