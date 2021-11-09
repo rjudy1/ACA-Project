@@ -375,10 +375,10 @@ public class PipelineSimulator {
       regs.squashAll();
 
       loader.squashAll();
-//      alu.squashAll();
-//      multiplier.squashAll();
-//      divider.squashAll();
-//      branchUnit.squashAll();
+      alu.squashAll();
+      multiplier.squashAll();
+      divider.squashAll();
+      branchUnit.squashAll();
       cdb.squashAll();
     }
 

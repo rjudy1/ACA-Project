@@ -92,6 +92,10 @@ public class ReservationStation {
 	  data2Valid = inst.regSrc2Valid && inst.regSrc2Used;
 	  
 	  // branch setup??
+	  if (inst.branch) {
+		  predictedTaken = inst.branchPrediction;
+		  address = inst.branchTgt;
+	  }
 	  
   }
 }
