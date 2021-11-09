@@ -6,6 +6,7 @@ public class IntMult extends FunctionalUnit {
     public int doneFlag = 1;
     
     public int destTag;
+    public int destVal;
     public int result;
     
     public void setRequestWriteback(boolean reqWB) {
@@ -22,6 +23,22 @@ public class IntMult extends FunctionalUnit {
     
     public boolean getCanWriteback() {
         return canWriteback;
+    }
+    
+    public int getDestTag() {
+        return destTag;
+    }
+    
+    public void setDestTag(int dTag) {
+    	destTag = dTag;
+    }
+    
+    public int getDestValue() {
+        return destVal;
+    }
+    
+    public void setDestValue(int dVal) {
+    	destVal = dVal;
     }
     
     public IntMult(PipelineSimulator sim) {

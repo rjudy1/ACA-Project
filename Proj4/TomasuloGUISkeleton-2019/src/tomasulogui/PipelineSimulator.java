@@ -405,10 +405,10 @@ public class PipelineSimulator {
     	  alu.setCanWriteback(true);
     	  cdb.setDataTag(alu.getDestTag());
     	  cdb.setDataValue(alu.getDestValue());
-      } else if (loader.getRequestWriteBack()) {
-    	  alu.setCanWriteback(true);
-    	  cdb.setDataTag(alu.getDestTag());
-    	  cdb.setDataValue(alu.getDestValue());
+      } else if (loader.isRequestingWriteback()) {
+    	  loader.setCanWriteback();
+    	  cdb.setDataTag(loader.getWriteTag());
+    	  cdb.setDataValue(loader.getWriteData());
       } 
 
     }

@@ -5,7 +5,7 @@ public class IntDivide extends FunctionalUnit {
     public static final int EXEC_CYCLES = 7;
     public int doneFlag = 1;
     public int destTag;
-    public int result;
+    public int destVal;
     boolean requestWriteback = false;
     boolean canWriteback = false;
     
@@ -25,9 +25,26 @@ public class IntDivide extends FunctionalUnit {
         return canWriteback;
     }
     
+    public int getDestTag() {
+        return destTag;
+    }
+    
+    public void setDestTag(int dTag) {
+    	destTag = dTag;
+    }
+    
+    public int getDestValue() {
+        return destVal;
+    }
+    
+    public void setDestValue(int dVal) {
+    	destVal = dVal;
+    }
+    
     public IntDivide(PipelineSimulator sim) {
         super(sim);
     }
+    
 
     public int calculateResult(int station) {
     	 if (canWriteback) {
@@ -37,11 +54,11 @@ public class IntDivide extends FunctionalUnit {
  	    	if (doneFlag == getExecCycles()) {
  	        	int operand1 = stations[station].getData1();
  	        	int operand2 = stations[station].getData2();
- 	        	result = operand1/operand2;
+ 	        	destVal = operand1/operand2;
 	        	destTag = stations[station].getDestTag();
  	    		requestWriteback = true;
  	    		doneFlag = 1;
- 	    		return result;
+ 	    		return destVal;
  	    	}
  	    	else {
  	    		doneFlag += 1;

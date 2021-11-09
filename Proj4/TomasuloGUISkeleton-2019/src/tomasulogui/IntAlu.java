@@ -13,7 +13,7 @@ package tomasulogui;
 public class IntAlu extends FunctionalUnit{
   public static final int EXEC_CYCLES = 1;
   
-  public int result;
+  public int destVal;
   public int destTag;
   boolean requestWriteback = false;
   boolean canWriteback = false;
@@ -32,6 +32,22 @@ public class IntAlu extends FunctionalUnit{
   
   public boolean getCanWriteback() {
       return canWriteback;
+  }
+  
+  public int getDestTag() {
+      return destTag;
+  }
+  
+  public void setDestTag(int dTag) {
+  	destTag = dTag;
+  }
+  
+  public int getDestValue() {
+      return destVal;
+  }
+  
+  public void setDestValue(int dVal) {
+  	destVal = dVal;
   }
   
   public void squashAll() {
@@ -60,31 +76,31 @@ public class IntAlu extends FunctionalUnit{
     	case ADDI:
     	case STORE:
     	case LOAD:
-    		result = operand1 + operand2;
+    		destVal = operand1 + operand2;
     		break;
     	case SUB:
     	case ANDI:
-    		result = operand1 - operand2; 
+    		destVal = operand1 - operand2; 
     		break;
     	case AND:
-    		result = operand1 & operand2;
+    		destVal = operand1 & operand2;
     		break;
     	case OR:
     	case ORI:
-    		result = operand1 | operand2;
+    		destVal = operand1 | operand2;
     		break;
     	case XOR:
     	case XORI:
-    		result = operand1 ^ operand2;    		
+    		destVal = operand1 ^ operand2;    		
     		break;
     	case SLL:
-    		result = operand1 << operand2;
+    		destVal = operand1 << operand2;
     		break;
     	case SRL:
-    		result = operand1 >>> operand2;
+    		destVal = operand1 >>> operand2;
     		break;
     	case SRA:
-    		result = operand1 >> operand2;
+    		destVal = operand1 >> operand2;
     		break;    		
 //    	case Instruction.INST_BEQ:
 //    	case Instruction.INST_BNE:
@@ -114,7 +130,7 @@ public class IntAlu extends FunctionalUnit{
           }
         }
     }
-	return result;
+	return destVal;
 
   }
 
