@@ -9,22 +9,6 @@ public class IntDivide extends FunctionalUnit {
     boolean requestWriteback = false;
     boolean canWriteback = false;
     
-    public void setRequestWriteback(boolean reqWB) {
-    	requestWriteback = reqWB;
-    }
-
-    public boolean getRequestWriteBack() {
-        return requestWriteback;
-    }
-    
-    public void setCanWriteback(boolean canWB) {
-    	canWriteback = canWB;
-    }
-    
-    public boolean getCanWriteback() {
-        return canWriteback;
-    }
-    
     public int getDestTag() {
         return destTag;
     }
