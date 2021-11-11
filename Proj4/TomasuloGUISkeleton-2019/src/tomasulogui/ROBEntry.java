@@ -1,3 +1,12 @@
+/*
+ * authors: Aaron Johnston and Rachael Judy
+ * file: ROBEntry.java
+ * purpose: fill in the tag fields and modify instruction
+ * changes:
+ *  	
+ *  	
+ */
+
 package tomasulogui;
 
 public class ROBEntry {
@@ -10,8 +19,13 @@ public class ROBEntry {
   boolean mispredicted = false;
   int instPC = -1;
   int writeReg = -1;
-  int writeValue = -1;
+  int writeValue = -1;  
+  boolean resultValid = false;
+  
 
+  // seems like the fields are just the instruction fields of register ready, etc.?
+  IssuedInst instr;
+  
   IssuedInst.INST_TYPE opcode;
 
   public ROBEntry(ReorderBuffer buffer) {
@@ -45,8 +59,11 @@ public class ROBEntry {
 
   public void setBranchTaken(boolean result) {
   // TODO - maybe more than simple set
-	  // get actual results
-	  // get new pc loaded, set flag?
+	  // if mispredicted, in reorder buffer, 
+	  // will reset pc to appropriate value and flush all
+	  if (result != predictTaken) {
+		  mispredicted = true;
+	  }
   }
 
   public int getWriteReg() {
@@ -62,15 +79,39 @@ public class ROBEntry {
   }
 
   public void copyInstData(IssuedInst inst, int frontQ) {
+	// G's code
     instPC = inst.getPC();
-    inst.setRegDestTag(frontQ);
-
+    inst.setRegDestTag(frontQ); // just gets new entry for the destination
+    
     // TODO - This is a long and complicated method, probably the most complex
     // of the project.  It does 2 things:
     // 1. update the instruction, as shown in 2nd line of code above
     // 2. update the fields of the ROBEntry, as shown in the 1st line of code above
     
-    // does this just mean check if the register is updated/ anyone ahead will change and give it a tag?
+    // look through all active instructions in reorder buffer to see if dest is used
+    instr = inst;
+    
+    boolean foundTag1 = false;
+    boolean foundTag2 = false;
+    int pcUsed = 0;
+    for (int addr = 0; addr < ReorderBuffer.size; addr++) {
+    	if (rob.buff[addr].instr.regDest == instr.regSrc1 && pcUsed < rob.buff[addr].instr.pc) {
+    		instr.regSrc1Tag = rob.buff[addr].instr.regDestTag; // set the tag
+    		pcUsed = rob.buff[addr].instr.pc;
+    		foundTag1 = true;
+    	}
+    	if (rob.buff[addr].instr.regDest == instr.regSrc2  && pcUsed < rob.buff[addr].instr.pc) {
+    		instr.regSrc2Tag = rob.buff[addr].instr.regDestTag; // set the tag
+    		pcUsed = rob.buff[addr].instr.pc;
+    		foundTag2 = true;
+    	}
+    }
+    instr.regSrc1Used = !foundTag1;
+    instr.regSrc2Used = !foundTag2;
+    
+    writeReg = inst.regDest;
+    
+    // ROB checks the tags and updates if available
     
   }
 

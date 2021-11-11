@@ -92,9 +92,12 @@ public class ReorderBuffer {
     // check entire CDB for someone waiting on this data
     // could be destination reg
     // could be store address source
+	  // iterate through the reorder buffer entries looking for the tag being broadcast, sort of like snoop
 	  // check CDB destination register done or address source done
-
+	  
     // TODO body of method
+	  
+	  
   }
 
   public void updateInstForIssue(IssuedInst inst) {
