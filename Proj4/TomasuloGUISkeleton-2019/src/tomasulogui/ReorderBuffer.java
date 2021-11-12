@@ -37,11 +37,6 @@ public class ReorderBuffer {
   }
 
   public boolean retireInst() {
-    // 3 cases
-    // 1. regular reg dest inst if writeBacks (Write to reg)
-    // 2. isBranch w/ mispredict 	If brancch (Write to PC)
-    // 3. isStore					if store (Store to mem)
-	
     ROBEntry retiree = buff[frontQ];
 
     if (retiree == null) {
@@ -52,7 +47,6 @@ public class ReorderBuffer {
       halted = true;
       return true;
     }
-
     boolean shouldAdvance = true;
 
     // TODO - this is where you look at the type of instruction and
@@ -61,23 +55,44 @@ public class ReorderBuffer {
     switch ((IssuedInst.INST_TYPE)buff[0].opcode) {
     case ADD:
     case ADDI:
+    case SUB:
+    case MUL:
+    case DIV:
+    case AND:
+    case ANDI:
+    case OR:
+    case ORI:
+    case XOR:
+    case XORI:
+    case SLL:
+    case SRL:
+    case SRA:
     case LOAD:
-    	// assign to register for most r type
-    	
-    case BEQ:
+    	// assign to register file
+    	simulator.regs.setReg(retiree.getWriteReg(),retiree.getWriteValue());
+    	break;
+    case BEQ:    
+    case BNE:
+    case BLTZ:
+    case BLEZ:
+    case BGEZ:
+    case BGTZ:
     	// check if was a mispredict, if so write the correct pc
-    	
+    	if (retiree.mispredicted) {
+    		simulator.setPC(retiree.getWriteValue()); 
+    		shouldAdvance = false; // Is this right?
+    	}
+    	break;
     case STORE:
     	// put in memory if not cleared/voided
-    	
+    	simulator.memory.setIntDataAtAddr(retiree.getWriteReg(), retiree.getWriteValue());
+    	break;
     case HALT:
     	halted = true;
+    	break;
    	default:
     		
     }
-    	
-    
-    
 
       // if mispredict branch, won't do normal advance
       if (shouldAdvance) {
