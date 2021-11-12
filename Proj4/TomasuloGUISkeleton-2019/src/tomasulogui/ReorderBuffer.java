@@ -38,9 +38,10 @@ public class ReorderBuffer {
 
   public boolean retireInst() {
     // 3 cases
-    // 1. regular reg dest inst
-    // 2. isBranch w/ mispredict
-    // 3. isStore
+    // 1. regular reg dest inst if writeBacks (Write to reg)
+    // 2. isBranch w/ mispredict 	If brancch (Write to PC)
+    // 3. isStore					if store (Store to mem)
+	
     ROBEntry retiree = buff[frontQ];
 
     if (retiree == null) {
