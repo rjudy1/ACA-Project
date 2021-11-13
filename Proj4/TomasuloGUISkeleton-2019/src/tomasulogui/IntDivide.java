@@ -6,8 +6,6 @@ public class IntDivide extends FunctionalUnit {
     public int doneFlag = 1;
     public int destTag;
     public int destVal;
-    boolean requestWriteback = false;
-    boolean canWriteback = false;
     
     public int getDestTag() {
         return destTag;
