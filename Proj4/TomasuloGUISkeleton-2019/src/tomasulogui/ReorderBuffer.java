@@ -54,7 +54,7 @@ public class ReorderBuffer {
     // case statement
     
     // might not happen in the same clock
-	readCDB(simulator.cdb);
+//	readCDB(simulator.cdb);
 
     
     if (buff[frontQ].opcode != null && retiree.isComplete()) {

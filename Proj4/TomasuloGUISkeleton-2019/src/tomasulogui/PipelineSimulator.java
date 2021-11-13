@@ -298,6 +298,7 @@ public class PipelineSimulator {
         }
 
         updateCDB();
+        reorder.readCDB(cdb);
 
         divider.execCycle(cdb);
         multiplier.execCycle(cdb);
@@ -393,22 +394,27 @@ public class PipelineSimulator {
     	  divider.setCanWriteback(true);
     	  cdb.setDataTag(divider.getDestTag());
     	  cdb.setDataValue(divider.getDestValue());
+    	  cdb.setDataValid(true);
       } else if (multiplier.getRequestWriteBack()) {
     	  multiplier.setCanWriteback(true);
     	  cdb.setDataTag(multiplier.getDestTag());
     	  cdb.setDataValue(multiplier.getDestValue());
+    	  cdb.setDataValid(true);
       } else if (branchUnit.getRequestWriteBack()) {
     	  branchUnit.setCanWriteback(true);
     	  cdb.setDataTag(branchUnit.getDestTag());
     	  cdb.setDataValue(branchUnit.getDestValue());
+    	  cdb.setDataValid(true);
       } else if (alu.getRequestWriteBack()) {
     	  alu.setCanWriteback(true);
     	  cdb.setDataTag(alu.getDestTag());
     	  cdb.setDataValue(alu.getDestValue());
+    	  cdb.setDataValid(true);
       } else if (loader.isRequestingWriteback()) {
     	  loader.setCanWriteback();
     	  cdb.setDataTag(loader.getWriteTag());
     	  cdb.setDataValue(loader.getWriteData());
+    	  cdb.setDataValid(true);
       } 
 
     }
