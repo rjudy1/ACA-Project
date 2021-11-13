@@ -90,7 +90,7 @@ public class ReservationStation {
 	  tag2 = inst.regSrc2Tag;
 	  data2 = inst.regSrc2Value;
 	  data2Valid = inst.regSrc2Valid && inst.regSrc2Used;
-	  
+	  function = inst.getOpcode();
 	  // branch setup??
 	  if (inst.branch) {
 		  predictedTaken = inst.branchPrediction;
