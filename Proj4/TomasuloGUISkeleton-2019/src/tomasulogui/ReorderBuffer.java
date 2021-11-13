@@ -52,7 +52,7 @@ public class ReorderBuffer {
     // TODO - this is where you look at the type of instruction and
     // figure out how to retire it properly
     // case statement
-    if (buff[0] == null) {
+    if (buff[0].opcode != null) {
 	    switch ((IssuedInst.INST_TYPE)buff[0].opcode) {
 	    case ADD:
 	    case ADDI:
