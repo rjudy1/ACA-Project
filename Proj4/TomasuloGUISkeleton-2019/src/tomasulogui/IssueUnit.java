@@ -31,6 +31,7 @@ public class IssueUnit {
     	// fetch
     	Instruction inst = simulator.memory.getInstAtAddr(simulator.getPC());
     	issuee = IssuedInst.createIssuedInst(inst);
+    	issuee.pc = simulator.getPC();
     	    	
       // We check the BTB, and put prediction if branch, updating PC
     	// puts result from predictBranch

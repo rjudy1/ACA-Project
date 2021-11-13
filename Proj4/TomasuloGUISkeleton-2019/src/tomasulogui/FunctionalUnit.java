@@ -45,21 +45,19 @@ public abstract class FunctionalUnit {
     //todo - start executing, ask for CDB, etc.
 	  zero = (zero+1)%2; // determines which station to check first
 	  // check station 0 then 1, repeats to allow one to execute
-	  if (stations[zero] == null) { 
-		  if (stations[zero].occupied) {
-			  stations[zero].snoop(cdb);
-			  if (stations[zero].isReady()) {
-				  calculateResult(zero);
-				  // must add a check of cycles required because can't be done until cycles pass
-				  // put on bus if good
-			  }
-		  } else if (stations[(zero+1)%2].occupied) {
-			  stations[(zero+1)%2].snoop(cdb);
-			  if (stations[(zero+1)%2].isReady()) {
-				  calculateResult((zero+1)%2);
-				  // must add a check of cycles required because can't be done until cycles pass
-				  // put on bus if good
-			  }
+	  if (stations[zero] != null && stations[zero].occupied) {
+		  stations[zero].snoop(cdb);
+		  if (stations[zero].isReady()) {
+			  calculateResult(zero);
+			  // must add a check of cycles required because can't be done until cycles pass
+			  // put on bus if good
+		  }
+	  } else if (stations[(zero+1)%2] != null && stations[(zero+1)%2].occupied) {
+		  stations[(zero+1)%2].snoop(cdb);
+		  if (stations[(zero+1)%2].isReady()) {
+			  calculateResult((zero+1)%2);
+			  // must add a check of cycles required because can't be done until cycles pass
+			  // put on bus if good
 		  }
 	  }
 	  
