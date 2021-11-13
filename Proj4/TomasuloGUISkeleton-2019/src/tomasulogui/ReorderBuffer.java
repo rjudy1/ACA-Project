@@ -52,8 +52,13 @@ public class ReorderBuffer {
     // TODO - this is where you look at the type of instruction and
     // figure out how to retire it properly
     // case statement
+    
+    // might not happen in the same clock
+	readCDB(simulator.cdb);
+
+    
     if (buff[frontQ].opcode != null && retiree.isComplete()) {
-	    switch ((IssuedInst.INST_TYPE)buff[0].opcode) {
+	    switch ((IssuedInst.INST_TYPE)buff[frontQ].opcode) {
 	    case ADD:
 	    case ADDI:
 	    case SUB:
@@ -99,7 +104,6 @@ public class ReorderBuffer {
 	    	break;
 		case J:
 		case JR:
-			readCDB(simulator.cdb);
 			if (retiree.resultValid) {
 				simulator.setPC(retiree.instr.branchTgt);
 			}
