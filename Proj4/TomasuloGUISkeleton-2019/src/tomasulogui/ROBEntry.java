@@ -90,6 +90,7 @@ public class ROBEntry {
     
     // look through all active instructions in reorder buffer to see if dest is used
     instr = inst;
+    opcode = instr.opcode;
     
     boolean foundTag1 = false;
     boolean foundTag2 = false;
