@@ -126,16 +126,13 @@ public class ReorderBuffer {
 	    }
     }
 
-
-
     return false;
   }
 
   public void readCDB(CDB cdb) {
 	  for (int stat = 0; stat < size; stat++) {
 		  if (buff[stat] != null && cdb.getDataValid() 
-				  && buff[stat].instr.getRegDestTag() == cdb.getDataTag() 
-				  && !buff[stat].instr.regDestUsed) {
+				  && buff[stat].instr.getRegDestTag() == cdb.getDataTag()) {
 			  buff[stat].writeValue = cdb.getDataValue();
 			  buff[stat].resultValid = true;
 			  buff[stat].complete = true;
