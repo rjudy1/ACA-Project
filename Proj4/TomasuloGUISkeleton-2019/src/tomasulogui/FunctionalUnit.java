@@ -65,6 +65,11 @@ public abstract class FunctionalUnit {
 
   public void acceptIssue(IssuedInst inst) {
   // todo - fill in reservation station (if available) with data from inst
+	  if (stations[zero] == null)
+		  stations[zero] = new ReservationStation(simulator);
+	  else if (stations[(zero+1)%2] == null)
+		  stations[(zero+1)%2] = new ReservationStation(simulator);
+	  
 	  if (!stations[zero].occupied)
 		  stations[zero].loadInst(inst);
 	  else if (!stations[(zero+1)%2].occupied)

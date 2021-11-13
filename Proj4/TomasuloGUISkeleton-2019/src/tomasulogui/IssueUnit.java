@@ -60,25 +60,25 @@ public class IssueUnit {
        	case SLL:
     	case SRL:
     	case SRA:
-     		if (simulator.alu.stations[0] != null) {
-     			simulator.alu.stations[0].loadInst(issuee);
-     		} else if (simulator.alu.stations[1] != null) {
-     			simulator.alu.stations[1].loadInst(issuee);
+     		if (simulator.alu.stations[0] == null) {
+     			simulator.alu.acceptIssue(issuee);
+     		} else if (simulator.alu.stations[1] == null) {
+     			simulator.alu.acceptIssue(issuee);
      		}
      		break;
 
     	case MUL:
-     		if (simulator.multiplier.stations[0] != null) {
-     			simulator.multiplier.stations[0].loadInst(issuee);
-     		} else if (simulator.multiplier.stations[1] != null) {
-     			simulator.multiplier.stations[1].loadInst(issuee);
+     		if (simulator.multiplier.stations[0] == null) {
+     			simulator.multiplier.acceptIssue(issuee);
+     		} else if (simulator.multiplier.stations[1] == null) {
+     			simulator.multiplier.acceptIssue(issuee);
      		}
      		break;
     		
     	case DIV:
-     		if (simulator.divider.stations[0] != null) {
+     		if (simulator.divider.stations[0] == null) {
      			simulator.divider.stations[0].loadInst(issuee);
-     		} else if (simulator.divider.stations[1] != null) {
+     		} else if (simulator.divider.stations[1] == null) {
      			simulator.divider.stations[1].loadInst(issuee);
      		}
      		break;
