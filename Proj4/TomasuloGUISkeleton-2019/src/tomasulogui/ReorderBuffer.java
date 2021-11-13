@@ -52,7 +52,7 @@ public class ReorderBuffer {
     // TODO - this is where you look at the type of instruction and
     // figure out how to retire it properly
     // case statement
-    if (buff[0].opcode != null && retiree.isComplete()) {
+    if (buff[frontQ].opcode != null && retiree.isComplete()) {
 	    switch ((IssuedInst.INST_TYPE)buff[0].opcode) {
 	    case ADD:
 	    case ADDI:
@@ -128,12 +128,18 @@ public class ReorderBuffer {
   }
 
   public void readCDB(CDB cdb) {
-	  // belongs to jumps
-	  if (buff[frontQ].instr.getRegDestTag() == cdb.getDataTag() 
-			  && cdb.getDataValid() && !buff[frontQ].instr.regDestUsed) {
-		  buff[frontQ].instr.branchTgt = cdb.getDataTag();
-	  } 	  
-	  
+	  for (int stat = 0; stat < size; stat++) {
+		  if (buff[stat] != null && cdb.getDataValid() 
+				  && buff[stat].instr.getRegDestTag() == cdb.getDataTag() 
+				  && !buff[stat].instr.regDestUsed) {
+			  buff[stat].writeValue = cdb.getDataValue();
+			  buff[stat].resultValid = true;
+			  buff[stat].complete = true;
+			  
+			  // can just go ahead and let this be assigned also but only used on jumps
+			  buff[stat].instr.branchTgt = cdb.getDataValue();
+		  }
+	  }	  
   }
 
   public void updateInstForIssue(IssuedInst inst) {
