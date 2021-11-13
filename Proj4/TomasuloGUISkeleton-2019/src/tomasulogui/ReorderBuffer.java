@@ -78,9 +78,15 @@ public class ReorderBuffer {
     case BGEZ:
     case BGTZ:
     	// check if was a mispredict, if so write the correct pc
-    	if (retiree.mispredicted) {
-    		simulator.setPC(retiree.getWriteValue()); 
-    		shouldAdvance = false; // Is this right?
+    	if (retiree.mispredicted && !retiree.predictTaken) {
+    		simulator.setPC(retiree.instr.getBranchTgt());
+    		simulator.squashAllInsts();
+    		shouldAdvance = false; 
+    	}
+    	if (retiree.mispredicted && retiree.predictTaken) {
+    		simulator.setPC(retiree.instPC+4);
+    		simulator.squashAllInsts();
+    		shouldAdvance = false; 
     	}
     	break;
     case STORE:
@@ -90,6 +96,21 @@ public class ReorderBuffer {
     case HALT:
     	halted = true;
     	break;
+	case J:
+	case JR:
+		readCDB(simulator.cdb);
+		if (retiree.resultValid) {
+			simulator.setPC(retiree.instr.branchTgt);
+		}
+		break;
+	case JAL:
+	case JALR:
+		readCDB(simulator.cdb);
+		if (retiree.resultValid) {
+			simulator.setPC(retiree.instr.branchTgt);
+			simulator.memory.setIntDataAtAddr(31,retiree.instPC);
+		}
+		break;
    	default:
     		
     }
@@ -110,10 +131,6 @@ public class ReorderBuffer {
     // could be store address source
 	  // iterate through the reorder buffer entries looking for the tag being broadcast, sort of like snoop
 	  // check CDB destination register done or address source done
-	  
-    // TODO body of method
-	  
-	  
   }
 
   public void updateInstForIssue(IssuedInst inst) {
