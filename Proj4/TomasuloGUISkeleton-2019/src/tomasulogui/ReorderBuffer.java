@@ -52,66 +52,68 @@ public class ReorderBuffer {
     // TODO - this is where you look at the type of instruction and
     // figure out how to retire it properly
     // case statement
-    switch ((IssuedInst.INST_TYPE)buff[0].opcode) {
-    case ADD:
-    case ADDI:
-    case SUB:
-    case MUL:
-    case DIV:
-    case AND:
-    case ANDI:
-    case OR:
-    case ORI:
-    case XOR:
-    case XORI:
-    case SLL:
-    case SRL:
-    case SRA:
-    case LOAD:
-    	// assign to register file
-    	simulator.regs.setReg(retiree.getWriteReg(),retiree.getWriteValue());
-    	break;
-    case BEQ:    
-    case BNE:
-    case BLTZ:
-    case BLEZ:
-    case BGEZ:
-    case BGTZ:
-    	// check if was a mispredict, if so write the correct pc
-    	if (retiree.mispredicted && !retiree.predictTaken) {
-    		simulator.setPC(retiree.instr.getBranchTgt());
-    		simulator.squashAllInsts();
-    		shouldAdvance = false; 
-    	}
-    	if (retiree.mispredicted && retiree.predictTaken) {
-    		simulator.setPC(retiree.instPC+4);
-    		simulator.squashAllInsts();
-    		shouldAdvance = false; 
-    	}
-    	break;
-    case STORE:
-    	// put in memory if not cleared/voided
-    	simulator.memory.setIntDataAtAddr(retiree.getWriteReg(), retiree.getWriteValue());
-    	break;
-    case HALT:
-    	halted = true;
-    	break;
-	case J:
-	case JR:
-		readCDB(simulator.cdb);
-		if (retiree.resultValid) {
-			simulator.setPC(retiree.instr.branchTgt);
-		}
-		break;
-	case JAL:
-	case JALR:
-		readCDB(simulator.cdb);
-		if (retiree.resultValid) {
-			simulator.setPC(retiree.instr.branchTgt);
-			simulator.memory.setIntDataAtAddr(31,retiree.instPC);
-		}
-		break;
-   	default:
+    if (buff[0] == null) {
+	    switch ((IssuedInst.INST_TYPE)buff[0].opcode) {
+	    case ADD:
+	    case ADDI:
+	    case SUB:
+	    case MUL:
+	    case DIV:
+	    case AND:
+	    case ANDI:
+	    case OR:
+	    case ORI:
+	    case XOR:
+	    case XORI:
+	    case SLL:
+	    case SRL:
+	    case SRA:
+	    case LOAD:
+	    	// assign to register file
+	    	simulator.regs.setReg(retiree.getWriteReg(),retiree.getWriteValue());
+	    	break;
+	    case BEQ:    
+	    case BNE:
+	    case BLTZ:
+	    case BLEZ:
+	    case BGEZ:
+	    case BGTZ:
+	    	// check if was a mispredict, if so write the correct pc
+	    	if (retiree.mispredicted && !retiree.predictTaken) {
+	    		simulator.setPC(retiree.instr.getBranchTgt());
+	    		simulator.squashAllInsts();
+	    		shouldAdvance = false; 
+	    	}
+	    	if (retiree.mispredicted && retiree.predictTaken) {
+	    		simulator.setPC(retiree.instPC+4);
+	    		simulator.squashAllInsts();
+	    		shouldAdvance = false; 
+	    	}
+	    	break;
+	    case STORE:
+	    	// put in memory if not cleared/voided
+	    	simulator.memory.setIntDataAtAddr(retiree.getWriteReg(), retiree.getWriteValue());
+	    	break;
+	    case HALT:
+	    	halted = true;
+	    	break;
+		case J:
+		case JR:
+			readCDB(simulator.cdb);
+			if (retiree.resultValid) {
+				simulator.setPC(retiree.instr.branchTgt);
+			}
+			break;
+		case JAL:
+		case JALR:
+			readCDB(simulator.cdb);
+			if (retiree.resultValid) {
+				simulator.setPC(retiree.instr.branchTgt);
+				simulator.memory.setIntDataAtAddr(31,retiree.instPC);
+			}
+			break;
+	   	default:
+	    }
     		
     }
 
