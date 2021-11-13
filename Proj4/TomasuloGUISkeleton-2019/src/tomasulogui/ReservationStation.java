@@ -86,7 +86,7 @@ public class ReservationStation {
 	  tag1 = inst.regSrc1Tag;
 	  data1 = inst.regSrc1Value;
 	  data1Valid = inst.regSrc1Valid && inst.regSrc1Used;
-	  
+	  	  
 	  tag2 = inst.regSrc2Tag;
 	  data2 = inst.regSrc2Value;
 	  data2Valid = inst.regSrc2Valid && inst.regSrc2Used;

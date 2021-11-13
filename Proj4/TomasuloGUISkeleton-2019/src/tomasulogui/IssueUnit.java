@@ -32,7 +32,21 @@ public class IssueUnit {
     	Instruction inst = simulator.memory.getInstAtAddr(simulator.getPC());
     	issuee = IssuedInst.createIssuedInst(inst);
     	issuee.pc = simulator.getPC();
+
+    	// ask G about cycle when to do this
+    	if (issuee.regSrc1Used)
+    		issuee.regSrc1Value = simulator.regs.getReg(issuee.regSrc1);
+    		issuee.regSrc1Valid = true;
+    	if (issuee.regSrc2Used) {
+    		issuee.regSrc2Value = simulator.regs.getReg(issuee.regSrc2);
+    		issuee.regSrc2Valid = true;
+    	} else if (inst instanceof ITypeInst) {
+    		issuee.regSrc2Value = issuee.immediate;
+    		issuee.regSrc2Valid = true;
+    	}
     	    	
+    	
+    	
       // We check the BTB, and put prediction if branch, updating PC
     	// puts result from predictBranch
       //     if pred taken, incr PC otherwise
@@ -46,7 +60,24 @@ public class IssueUnit {
     	} else {
     		simulator.setPC(simulator.getPC() + 4);
     	}
-   
+
+        // We then send this to the ROB, which fills in the data fields
+      	// reorder buffer fills in the data fields and tags
+      	simulator.reorder.updateInstForIssue(issuee);
+
+        // We then check the CDB, and see if it is broadcasting data we need,
+        //    so that we can forward during issue
+      	// special case of checking due to sequential ordering and if ready
+      	if (simulator.cdb.getDataTag() == issuee.regSrc1Tag && simulator.cdb.dataValid) {
+      		issuee.regSrc1Value = simulator.cdb.getDataValue();
+      		issuee.regSrc1Valid = true;
+      	}
+      	if (simulator.cdb.getDataTag() == issuee.regSrc2Tag && simulator.cdb.dataValid) {
+      		issuee.regSrc2Value = simulator.cdb.getDataValue();
+      		issuee.regSrc2Valid = true;
+      	}
+
+    	
     	switch (issuee.getOpcode()) {
     	case ADD:
     	case ADDI:
@@ -113,21 +144,6 @@ public class IssueUnit {
      		break;
     	}
     	
-      // We then send this to the ROB, which fills in the data fields
-    	// reorder buffer fills in the data fields and tags
-    	simulator.reorder.updateInstForIssue(issuee);
-
-      // We then check the CDB, and see if it is broadcasting data we need,
-      //    so that we can forward during issue
-    	// special case of checking due to sequential ordering and if ready
-    	if (simulator.cdb.getDataTag() == issuee.regSrc1Tag) {
-    		issuee.regSrc1Value = simulator.cdb.getDataValue();
-    		issuee.regSrc1Valid = true;
-    	}
-    	if (simulator.cdb.getDataTag() == issuee.regSrc2Tag) {
-    		issuee.regSrc2Value = simulator.cdb.getDataValue();
-    		issuee.regSrc2Valid = true;
-    	}
 
       // We then send this to the FU, who stores in reservation station
     	// functional unit has to choose the reservation station (done above)
