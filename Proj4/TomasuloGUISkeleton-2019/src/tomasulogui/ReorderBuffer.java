@@ -114,15 +114,15 @@ public class ReorderBuffer {
 			break;
 	   	default:
 	    }
-    		
+	    // if mispredict branch, won't do normal advance
+	    if (shouldAdvance) {
+	       numRetirees++;
+	       buff[frontQ] = null;
+	       frontQ = (frontQ + 1) % size;
+	    }
     }
 
-      // if mispredict branch, won't do normal advance
-      if (shouldAdvance) {
-        numRetirees++;
-        buff[frontQ] = null;
-        frontQ = (frontQ + 1) % size;
-      }
+
 
     return false;
   }
