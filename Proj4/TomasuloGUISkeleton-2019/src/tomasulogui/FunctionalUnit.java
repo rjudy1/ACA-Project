@@ -6,6 +6,7 @@ public abstract class FunctionalUnit {
   
   int stationToGo = 0;
   int stationDone = 0;
+  int stationToInsert = 0;
   boolean requestWriteback = false;
   boolean canWriteback = false;
 
@@ -41,6 +42,16 @@ public abstract class FunctionalUnit {
   public abstract int calculateResult(int station);
 
   public abstract int getExecCycles();
+  
+  public boolean isReservationStationAvailable() {
+		for (int i = 0; i < 2; i++) {
+     		if (stations[i] == null) {
+     			stationToInsert = i;
+     			return true;
+     		} 
+ 		}
+		return false;
+  }
 
   public void execCycle(CDB cdb) {
 	  
@@ -78,13 +89,15 @@ public abstract class FunctionalUnit {
 
   public void acceptIssue(IssuedInst inst) {
   // todo - fill in reservation station (if available) with data from inst
-	  for (int x = 0; x < 2; x++) {
-		  if (stations[x] == null) {
-			  stations[x] = new ReservationStation(simulator);
-			  stations[x].loadInst(inst);
-			  break;
-		  }
-	  } 
+	  stations[stationToInsert] = new ReservationStation(simulator);
+	  stations[stationToInsert].loadInst(inst);
+//	  for (int x = 0; x < 2; x++) {
+//		  if (stations[x] == null) {
+//			  stations[x] = new ReservationStation(simulator);
+//			  stations[x].loadInst(inst);
+//			  break;
+//		  }
+//	  } 
 	  return;
   }
 
