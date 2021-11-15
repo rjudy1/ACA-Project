@@ -5,6 +5,7 @@ public abstract class FunctionalUnit {
   ReservationStation[] stations = new ReservationStation[2];
   
   int stationToGo = 0;
+  int stationDone = 0;
   boolean requestWriteback = false;
   boolean canWriteback = false;
 
@@ -45,10 +46,12 @@ public abstract class FunctionalUnit {
 	  
 	  // flips red robin style
 	  stationToGo = (stationToGo+1)%2;
+
   	  if (canWriteback) {		  
           requestWriteback = false;
-          stations[stationToGo] = null;
+          stations[stationDone] = null;
   	  }
+
 	  
       //todo - start executing, ask for CDB, etc.
 	  // check station 0 then 1, repeats to allow one to execute
@@ -56,6 +59,7 @@ public abstract class FunctionalUnit {
     	  stations[stationToGo].snoop(cdb);
     	  if (stations[stationToGo].isReady()) {
     		  calculateResult(stationToGo);
+    		  stationDone = stationToGo;
     		  // must add a check of cycles required because can't be done until cycles pass
     		  // put on bus if good
     	  }
@@ -63,6 +67,8 @@ public abstract class FunctionalUnit {
 		  stations[(stationToGo+1)%2].snoop(cdb);
 		  if (stations[(stationToGo+1)%2].isReady()) {
 			  calculateResult((stationToGo+1)%2);
+    		  stationDone = (stationToGo+1)%2;
+
 			  // must add a check of cycles required because can't be done until cycles pass
 			  // put on bus if good
 		  }
@@ -76,7 +82,7 @@ public abstract class FunctionalUnit {
             }
           }
       }
-      canWriteback=false; // issue is related to this !!!!, wrong thing being overwritten/issued?
+      canWriteback=false; 
   }
 
   public void acceptIssue(IssuedInst inst) {
