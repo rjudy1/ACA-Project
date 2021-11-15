@@ -94,28 +94,41 @@ public class ROBEntry {
     
     boolean foundTag1 = false;
     boolean foundTag2 = false;
-    int pcUsed = instr.pc;
+    int pcUsed1 = instr.pc;
+    int pcUsed2 = instr.pc;
     for (int addr = 0; addr < ReorderBuffer.size; addr++) {
     	if (rob.buff[addr] != null) {
-	    	if (rob.buff[addr].instr.regDest == instr.regSrc1 && rob.buff[addr].instr.pc < pcUsed) {
-	    		instr.regSrc1Tag = rob.buff[addr].instr.regDestTag; // set the tag
-	    		pcUsed = rob.buff[addr].instr.pc;
-	    		foundTag1 = true;
-	    		instr.regSrc1Valid = false;
+	    	if (rob.buff[addr].instr.regDest == instr.regSrc1 && rob.buff[addr].instr.pc < pcUsed1) {
+	    		if (rob.buff[addr].isComplete()) {
+	    			instr.regSrc1Value = rob.buff[addr].writeValue;
+	    			instr.regSrc1Valid = true;
+	    		} else {
+	    			instr.regSrc1Tag = rob.buff[addr].instr.regDestTag; // set the tag
+	    			instr.regSrc1Valid = false;
+	    		}	    			
+    			pcUsed1 = rob.buff[addr].instr.pc;
+//	    		foundTag1 = true;
+//	    		instr.regSrc1Valid = false;
 //	    		instr.regSrc1Used = false;
 	    	}
-	    	if (rob.buff[addr].instr.regDest == instr.regSrc2  && pcUsed < rob.buff[addr].instr.pc) {
-	    		instr.regSrc2Tag = rob.buff[addr].instr.regDestTag; // set the tag
-	    		pcUsed = rob.buff[addr].instr.pc;
-	    		foundTag2 = true;
-	    		instr.regSrc2Valid = false;
+	    	if (rob.buff[addr].instr.regDest == instr.regSrc2  && rob.buff[addr].instr.pc < pcUsed2) {
+	    		if (rob.buff[addr].isComplete()) {
+	    			instr.regSrc2Value = rob.buff[addr].writeValue;
+	    			instr.regSrc2Valid = true;
+	    		} else {
+	    			instr.regSrc2Tag = rob.buff[addr].instr.regDestTag; // set the tag
+	    			instr.regSrc2Valid = false;
+	    		}
+	    		pcUsed2 = rob.buff[addr].instr.pc;
+//	    		foundTag2 = true;
+//	    		instr.regSrc2Valid = false;
 
 	    	}
     	}
     }
     
-    instr.regSrc1Used = !foundTag1;
-    instr.regSrc2Used = !foundTag2;
+//    instr.regSrc1Used = !foundTag1;
+//    instr.regSrc2Used = !foundTag2;
     
     writeReg = inst.regDest;
     

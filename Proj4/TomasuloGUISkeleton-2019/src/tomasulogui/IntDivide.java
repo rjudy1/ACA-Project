@@ -46,14 +46,7 @@ public class IntDivide extends FunctionalUnit {
  	    		doneFlag += 1;
  	    	}
          }
-         // check reservationStations for cdb data
-         if (simulator.cdb.getDataValid()) {
-             for (int i = 0; i < 2; i++) {
-               if (stations[i] != null) {
-                 stations[i].snoop(simulator.cdb);
-               }
-             }
-         }
+
          return -1;
     }
 

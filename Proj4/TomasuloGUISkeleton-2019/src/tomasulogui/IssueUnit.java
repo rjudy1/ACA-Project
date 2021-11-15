@@ -15,6 +15,7 @@ public class IssueUnit {
 
     PipelineSimulator simulator;
     IssuedInst issuee;
+    boolean issued;
     Object fu;
 
     public IssueUnit(PipelineSimulator sim) {
@@ -46,18 +47,12 @@ public class IssueUnit {
     	}
     	
     	
-      // We check the BTB, and put prediction if branch, updating PC
+    	// We check the BTB, and put prediction if branch, updating PC
     	// puts result from predictBranch
-      //     if pred taken, incr PC otherwise
+    	//     if pred taken, incr PC otherwise
     	if (issuee.isBranch()) {
     		issuee.branch = true;
     		simulator.btb.predictBranch(issuee);
-    	}
-    	
-    	if (issuee.branch) {
-    		simulator.setPC(issuee.branchTgt);
-    	} else {
-    		simulator.setPC(simulator.getPC() + 4);
     	}
 
         // We then send this to the ROB, which fills in the data fields
@@ -76,74 +71,87 @@ public class IssueUnit {
       		issuee.regSrc2Valid = true;
       	}
 
-    	
-    	switch (issuee.getOpcode()) {
-    	case ADD:
-    	case ADDI:
-    	case SUB:
-    	case AND:
-    	case ANDI:
-    	case OR:
-    	case ORI:
-    	case XOR:
-    	case XORI:
-       	case SLL:
-    	case SRL:
-    	case SRA:
-     		if (simulator.alu.stations[0] == null) {
-     			simulator.alu.acceptIssue(issuee);
-     		} else if (simulator.alu.stations[1] == null) {
-     			simulator.alu.acceptIssue(issuee);
-     		}
-     		break;
-
-    	case MUL:
-     		if (simulator.multiplier.stations[0] == null) {
-     			simulator.multiplier.acceptIssue(issuee);
-     		} else if (simulator.multiplier.stations[1] == null) {
-     			simulator.multiplier.acceptIssue(issuee);
-     		}
-     		break;
+    	issued = false;
+    	if (!simulator.reorder.isFull()) {
     		
-    	case DIV:
-     		if (simulator.divider.stations[0] == null) {
-     			simulator.divider.stations[0].loadInst(issuee);
-     		} else if (simulator.divider.stations[1] == null) {
-     			simulator.divider.stations[1].loadInst(issuee);
-     		}
-     		break;
-    		
-    	case LOAD:
-    	case STORE:
-    		if (simulator.loader.isReservationStationAvail()) {
-    			simulator.loader.acceptIssue(issuee);
-    		}
-    		break;
-    		
-    	case HALT:    		
-    	case NOP:
-    	case J:
-    	case JAL:
-    	case JR:
-    	case JALR:
-    		// straight to reorder buffer
-    		break;
-    	
-    	case BEQ:
-    	case BNE:
-    	case BLTZ:
-    	case BLEZ:
-    	case BGEZ:
-    	case BGTZ:
-     		if (simulator.branchUnit.stations[0] != null) {
-     			simulator.branchUnit.stations[0].loadInst(issuee);
-     		} else if (simulator.branchUnit.stations[1] != null) {
-     			simulator.branchUnit.stations[1].loadInst(issuee);
-     		}
-     		break;
+	    	switch (issuee.getOpcode()) {
+	    	case ADD:
+	    	case ADDI:
+	    	case SUB:
+	    	case AND:
+	    	case ANDI:
+	    	case OR:
+	    	case ORI:
+	    	case XOR:
+	    	case XORI:
+	       	case SLL:
+	    	case SRL:
+	    	case SRA:
+	    		for (int i = 0; i < 2; i++) {
+	    			if (simulator.alu.stations[i] == null) {
+	    				simulator.alu.acceptIssue(issuee);
+	    				issued = true;
+	    			} 
+	     		}
+	     		break;
+	
+	    	case MUL:
+	    		for (int i = 0; i < 2; i++) {
+	    			if (simulator.multiplier.stations[i] == null) {
+	    				simulator.multiplier.acceptIssue(issuee);
+	    				issued = true;
+	    			}
+	    		}
+	     		break;
+	    		
+	    	case DIV:
+	    		for (int i = 0; i < 2; i++) {
+		     		if (simulator.divider.stations[i] == null) {
+		     			simulator.divider.acceptIssue(issuee);
+		     			issued = true;
+		     		} 
+	     		}
+	     		break;
+	    		
+	    	case LOAD:
+	    	case STORE:
+	    		if (simulator.loader.isReservationStationAvail()) {
+	    			simulator.loader.acceptIssue(issuee);
+	    			issued = true;
+	    		}
+	    		break;
+	    		
+	    	case HALT:    		
+	    	case NOP:
+	    	case J:
+	    	case JAL:
+	    	case JR:
+	    	case JALR:
+	    		// straight to reorder buffer
+	    		issued = true;
+	    		break;
+	    	
+	    	case BEQ:
+	    	case BNE:
+	    	case BLTZ:
+	    	case BLEZ:
+	    	case BGEZ:
+	    	case BGTZ:
+	    		for (int i = 0; i < 2; i++) {
+		     		if (simulator.branchUnit.stations[i] == null) {
+		     			simulator.branchUnit.acceptIssue(issuee);
+		     			issued = true;
+		     		}
+	    		}
+	     		break;
+	    	}
     	}
     	
-
+    	if (issuee.branch) {
+    		simulator.setPC(issuee.branchTgt);
+    	} else if (issued) {
+    		simulator.setPC(simulator.getPC() + 4);
+    	}
       // We then send this to the FU, who stores in reservation station
     	// functional unit has to choose the reservation station (done above)
     }

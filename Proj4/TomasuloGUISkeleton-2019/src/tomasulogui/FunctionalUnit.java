@@ -66,7 +66,17 @@ public abstract class FunctionalUnit {
 			  // must add a check of cycles required because can't be done until cycles pass
 			  // put on bus if good
 		  }
-	  }  
+	  }
+      
+  	// check reservationStations for cdb data
+      if (simulator.cdb.getDataValid()) {
+          for (int i = 0; i < 2; i++) {
+            if (stations[i] != null) {
+              stations[i].snoop(simulator.cdb);
+            }
+          }
+      }
+      canWriteback=false; // issue is related to this !!!!, wrong thing being overwritten/issued?
   }
 
   public void acceptIssue(IssuedInst inst) {

@@ -86,11 +86,11 @@ public class ReservationStation {
 	  
 	  tag1 = inst.regSrc1Tag;
 	  data1 = inst.regSrc1Value;
-	  data1Valid = inst.regSrc1Valid && inst.regSrc1Used;
+	  data1Valid = inst.regSrc1Valid;
 	  	  
 	  tag2 = inst.regSrc2Tag;
 	  data2 = inst.regSrc2Value;
-	  data2Valid = inst.regSrc2Valid && inst.regSrc2Used;
+	  data2Valid = inst.regSrc2Valid;
 	  function = inst.getOpcode();
 	  // branch setup??
 	  if (inst.branch) {

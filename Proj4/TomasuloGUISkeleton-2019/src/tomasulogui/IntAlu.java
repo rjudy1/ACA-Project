@@ -88,14 +88,7 @@ public class IntAlu extends FunctionalUnit{
     	requestWriteback = true;
     	destTag = stations[station].getDestTag();
     }
-	// check reservationStations for cdb data
-    if (simulator.cdb.getDataValid()) {
-        for (int i = 0; i < 2; i++) {
-          if (stations[i] != null) {
-            stations[i].snoop(simulator.cdb);
-          }
-        }
-    }
+
 	return destVal;
 
   }

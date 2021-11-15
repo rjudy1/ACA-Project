@@ -92,7 +92,7 @@ public class ReorderBuffer {
 	    		simulator.squashAllInsts();
 	    		shouldAdvance = false; 
 	    	}
-	    	if (retiree.mispredicted && retiree.predictTaken) {
+	    	else if (retiree.mispredicted && retiree.predictTaken) {
 	    		simulator.setPC(retiree.instPC+4);
 	    		simulator.squashAllInsts();
 	    		shouldAdvance = false; 
@@ -140,7 +140,7 @@ public class ReorderBuffer {
 		  if (buff[stat] != null && cdb.getDataValid() 
 				  && buff[stat].instr.getRegDestTag() == cdb.getDataTag()) {
 			  buff[stat].writeValue = cdb.getDataValue();
-//			  buff[stat].resultValid = true;
+			  buff[stat].resultValid = true;
 			  buff[stat].complete = true;
 			  
 			  // can just go ahead and let this be assigned also but only used on jumps
