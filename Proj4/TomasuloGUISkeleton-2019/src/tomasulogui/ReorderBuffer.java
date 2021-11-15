@@ -60,7 +60,7 @@ public class ReorderBuffer {
 //	readCDB(simulator.cdb);
 
     
-    if (retiree.opcode != null && retiree.isComplete()) {
+    if (retiree.opcode != null && retiree.isComplete() || retiree.opcode == IssuedInst.INST_TYPE.NOP) {
 	    switch ((IssuedInst.INST_TYPE)retiree.opcode) {
 	    case ADD:
 	    case ADDI:
@@ -122,7 +122,12 @@ public class ReorderBuffer {
 	    }
 	    
 //	    retiree.complete = true;
-	    shouldAdvance = retiree.isComplete() && !retiree.mispredicted;
+	    
+	    if (retiree.opcode == IssuedInst.INST_TYPE.NOP) {
+	    	shouldAdvance = true;
+	    } else {
+	    	shouldAdvance = retiree.isComplete() && !retiree.mispredicted;
+	    }
 	    
 	    // if mispredict branch, won't do normal advance
 	    if (shouldAdvance) {
