@@ -46,9 +46,7 @@ public class IntAlu extends FunctionalUnit{
 
 
   public int calculateResult(int station) {
-	if (canWriteback) {
-         requestWriteback = false;
-    }
+
     if (!requestWriteback) {
     	int operand1 = stations[station].getData1();
     	int operand2 = stations[station].getData2();

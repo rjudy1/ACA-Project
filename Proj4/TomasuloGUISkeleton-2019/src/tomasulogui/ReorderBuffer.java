@@ -1,3 +1,6 @@
+// I think we're using the resultValid flag incorrectly
+
+
 package tomasulogui;
 
 public class ReorderBuffer {
@@ -57,8 +60,8 @@ public class ReorderBuffer {
 //	readCDB(simulator.cdb);
 
     
-    if (buff[frontQ].opcode != null && retiree.isComplete()) {
-	    switch ((IssuedInst.INST_TYPE)buff[frontQ].opcode) {
+    if (retiree.opcode != null && retiree.isComplete()) {
+	    switch ((IssuedInst.INST_TYPE)retiree.opcode) {
 	    case ADD:
 	    case ADDI:
 	    case SUB:
@@ -110,7 +113,6 @@ public class ReorderBuffer {
 			break;
 		case JAL:
 		case JALR:
-			readCDB(simulator.cdb);
 			if (retiree.resultValid) {
 				simulator.setPC(retiree.instr.branchTgt);
 				simulator.memory.setIntDataAtAddr(31,retiree.instPC);
@@ -118,6 +120,10 @@ public class ReorderBuffer {
 			break;
 	   	default:
 	    }
+	    
+//	    retiree.complete = true;
+	    shouldAdvance = retiree.isComplete() && !retiree.mispredicted;
+	    
 	    // if mispredict branch, won't do normal advance
 	    if (shouldAdvance) {
 	       numRetirees++;
@@ -130,11 +136,11 @@ public class ReorderBuffer {
   }
 
   public void readCDB(CDB cdb) {
-	  for (int stat = 0; stat < size; stat++) {
+	  for (int stat = 0; stat < size; stat++) { // stat = station num
 		  if (buff[stat] != null && cdb.getDataValid() 
 				  && buff[stat].instr.getRegDestTag() == cdb.getDataTag()) {
 			  buff[stat].writeValue = cdb.getDataValue();
-			  buff[stat].resultValid = true;
+//			  buff[stat].resultValid = true;
 			  buff[stat].complete = true;
 			  
 			  // can just go ahead and let this be assigned also but only used on jumps

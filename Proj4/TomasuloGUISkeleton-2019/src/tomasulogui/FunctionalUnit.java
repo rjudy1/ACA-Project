@@ -4,7 +4,7 @@ public abstract class FunctionalUnit {
   PipelineSimulator simulator;
   ReservationStation[] stations = new ReservationStation[2];
   
-  int zero = 0;
+  int stationToGo = 0;
   boolean requestWriteback = false;
   boolean canWriteback = false;
 
@@ -42,38 +42,44 @@ public abstract class FunctionalUnit {
   public abstract int getExecCycles();
 
   public void execCycle(CDB cdb) {
-    //todo - start executing, ask for CDB, etc.
-	  zero = (zero+1)%2; // determines which station to check first
-	  // check station 0 then 1, repeats to allow one to execute
-	  if (stations[zero] != null) {
-		  stations[zero].snoop(cdb);
-		  if (stations[zero].isReady()) {
-			  calculateResult(zero);
-			  // must add a check of cycles required because can't be done until cycles pass
-			  // put on bus if good
-		  }
-	  } else if (stations[(zero+1)%2] != null) {
-		  stations[(zero+1)%2].snoop(cdb);
-		  if (stations[(zero+1)%2].isReady()) {
-			  calculateResult((zero+1)%2);
-			  // must add a check of cycles required because can't be done until cycles pass
-			  // put on bus if good
-		  }
-	  }
 	  
+	  // flips red robin style
+	  stationToGo = (stationToGo+1)%2;
+  	  if (canWriteback) {		  
+          requestWriteback = false;
+          stations[stationToGo] = null;
+  	  }
+	  
+      //todo - start executing, ask for CDB, etc.
+	  // check station 0 then 1, repeats to allow one to execute
+      if (stations[stationToGo] != null) {
+    	  stations[stationToGo].snoop(cdb);
+    	  if (stations[stationToGo].isReady()) {
+    		  calculateResult(stationToGo);
+    		  // must add a check of cycles required because can't be done until cycles pass
+    		  // put on bus if good
+    	  }
+	  } else if (stations[(stationToGo+1)%2] != null) {
+		  stations[(stationToGo+1)%2].snoop(cdb);
+		  if (stations[(stationToGo+1)%2].isReady()) {
+			  calculateResult((stationToGo+1)%2);
+			  // must add a check of cycles required because can't be done until cycles pass
+			  // put on bus if good
+		  }
+	  }  
   }
 
   public void acceptIssue(IssuedInst inst) {
   // todo - fill in reservation station (if available) with data from inst
-	  if (stations[zero] == null)
-		  stations[zero] = new ReservationStation(simulator);
-	  else if (stations[(zero+1)%2] == null)
-		  stations[(zero+1)%2] = new ReservationStation(simulator);
+	  if (stations[stationToGo] == null)
+		  stations[stationToGo] = new ReservationStation(simulator);
+	  else if (stations[(stationToGo+1)%2] == null)
+		  stations[(stationToGo+1)%2] = new ReservationStation(simulator);
 	  
-	  if (!stations[zero].occupied)
-		  stations[zero].loadInst(inst);
-	  else if (!stations[(zero+1)%2].occupied)
-		  stations[(zero+1)%2].loadInst(inst);
+	  if (!stations[stationToGo].occupied)
+		  stations[stationToGo].loadInst(inst);
+	  else if (!stations[(stationToGo+1)%2].occupied)
+		  stations[(stationToGo+1)%2].loadInst(inst);
   }
 
 }

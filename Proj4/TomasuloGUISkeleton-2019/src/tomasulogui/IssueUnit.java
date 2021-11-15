@@ -44,7 +44,6 @@ public class IssueUnit {
     		issuee.regSrc2Value = issuee.immediate;
     		issuee.regSrc2Valid = true;
     	}
-    	    	
     	
     	
       // We check the BTB, and put prediction if branch, updating PC

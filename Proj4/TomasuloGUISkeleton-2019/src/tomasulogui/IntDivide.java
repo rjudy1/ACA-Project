@@ -29,9 +29,9 @@ public class IntDivide extends FunctionalUnit {
     
 
     public int calculateResult(int station) {
-    	 if (canWriteback) {
-             requestWriteback = false;
-         }
+//    	 if (canWriteback) {
+//             requestWriteback = false;
+//         }
          if (!requestWriteback) {
  	    	if (doneFlag == getExecCycles()) {
  	        	int operand1 = stations[station].getData1();

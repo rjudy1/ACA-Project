@@ -94,21 +94,26 @@ public class ROBEntry {
     
     boolean foundTag1 = false;
     boolean foundTag2 = false;
-    int pcUsed = 0;
+    int pcUsed = instr.pc;
     for (int addr = 0; addr < ReorderBuffer.size; addr++) {
     	if (rob.buff[addr] != null) {
-	    	if (rob.buff[addr].instr.regDest == instr.regSrc1 && pcUsed < rob.buff[addr].instr.pc) {
+	    	if (rob.buff[addr].instr.regDest == instr.regSrc1 && rob.buff[addr].instr.pc < pcUsed) {
 	    		instr.regSrc1Tag = rob.buff[addr].instr.regDestTag; // set the tag
 	    		pcUsed = rob.buff[addr].instr.pc;
 	    		foundTag1 = true;
+	    		instr.regSrc1Valid = false;
+//	    		instr.regSrc1Used = false;
 	    	}
 	    	if (rob.buff[addr].instr.regDest == instr.regSrc2  && pcUsed < rob.buff[addr].instr.pc) {
 	    		instr.regSrc2Tag = rob.buff[addr].instr.regDestTag; // set the tag
 	    		pcUsed = rob.buff[addr].instr.pc;
 	    		foundTag2 = true;
+	    		instr.regSrc2Valid = false;
+
 	    	}
     	}
     }
+    
     instr.regSrc1Used = !foundTag1;
     instr.regSrc2Used = !foundTag2;
     

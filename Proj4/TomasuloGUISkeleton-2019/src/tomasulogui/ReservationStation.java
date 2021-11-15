@@ -57,6 +57,7 @@ public class ReservationStation {
 
   public void snoop(CDB cdb) {
     // TODO - add code to snoop on CDB each cycle
+	  // might need to block snoop when data in instruction invalid
 	  if ((simulator.cdb.getDataTag() == tag1) 
 			  && simulator.cdb.getDataValid()) {
 		  data1 = simulator.cdb.getDataValue();
