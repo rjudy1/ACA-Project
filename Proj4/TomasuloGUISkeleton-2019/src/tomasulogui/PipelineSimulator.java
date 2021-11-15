@@ -296,7 +296,7 @@ public class PipelineSimulator {
         if (!quietMode) {
           System.out.println("fetching instruction from address " + pc.getPC());
         }
-
+        
         updateCDB();
         reorder.readCDB(cdb);
 
@@ -308,6 +308,7 @@ public class PipelineSimulator {
 
         // this updates PC, so no call from here for that
         issue.execCycle();
+
 
         instExec++;
       }

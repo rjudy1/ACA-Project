@@ -35,16 +35,18 @@ public class IssueUnit {
     	issuee.pc = simulator.getPC();
 
     	// ask G about cycle when to do this
-    	if (issuee.regSrc1Used)
+    	if (issuee.regSrc1Used) {
     		issuee.regSrc1Value = simulator.regs.getReg(issuee.regSrc1);
-    		issuee.regSrc1Valid = true;
+    	}
     	if (issuee.regSrc2Used) {
     		issuee.regSrc2Value = simulator.regs.getReg(issuee.regSrc2);
-    		issuee.regSrc2Valid = true;
-    	} else if (inst instanceof ITypeInst) {
+    	} else if (inst instanceof ITypeInst || inst.getOpcode() == Instruction.INST_SLL
+    			|| inst.getOpcode() == Instruction.INST_SRL || inst.getOpcode() == Instruction.INST_SRA) {
     		issuee.regSrc2Value = issuee.immediate;
-    		issuee.regSrc2Valid = true;
     	}
+		issuee.regSrc1Valid = true;
+		issuee.regSrc2Valid = true;
+
     	
     	
     	// We check the BTB, and put prediction if branch, updating PC
@@ -54,10 +56,11 @@ public class IssueUnit {
     		issuee.branch = true;
     		simulator.btb.predictBranch(issuee);
     	}
-
+    	
         // We then send this to the ROB, which fills in the data fields
       	// reorder buffer fills in the data fields and tags
-      	simulator.reorder.updateInstForIssue(issuee);
+    	// only create new instruction if it hasn't gotten stuck
+    	simulator.reorder.updateInstForIssue(issuee);
 
         // We then check the CDB, and see if it is broadcasting data we need,
         //    so that we can forward during issue
@@ -72,6 +75,8 @@ public class IssueUnit {
       	}
 
     	issued = false;
+        // We then send this to the FU, who stores in reservation station
+      	// functional unit has to choose the reservation station
     	if (!simulator.reorder.isFull()) {
     		
 	    	switch (issuee.getOpcode()) {
@@ -91,6 +96,7 @@ public class IssueUnit {
 	    			if (simulator.alu.stations[i] == null) {
 	    				simulator.alu.acceptIssue(issuee);
 	    				issued = true;
+	    				break;
 	    			} 
 	     		}
 	     		break;
@@ -100,6 +106,7 @@ public class IssueUnit {
 	    			if (simulator.multiplier.stations[i] == null) {
 	    				simulator.multiplier.acceptIssue(issuee);
 	    				issued = true;
+	    				break;
 	    			}
 	    		}
 	     		break;
@@ -109,6 +116,7 @@ public class IssueUnit {
 		     		if (simulator.divider.stations[i] == null) {
 		     			simulator.divider.acceptIssue(issuee);
 		     			issued = true;
+		     			break;
 		     		} 
 	     		}
 	     		break;
@@ -118,6 +126,7 @@ public class IssueUnit {
 	    		if (simulator.loader.isReservationStationAvail()) {
 	    			simulator.loader.acceptIssue(issuee);
 	    			issued = true;
+	    			break;
 	    		}
 	    		break;
 	    		
@@ -141,6 +150,7 @@ public class IssueUnit {
 		     		if (simulator.branchUnit.stations[i] == null) {
 		     			simulator.branchUnit.acceptIssue(issuee);
 		     			issued = true;
+		     			break;
 		     		}
 	    		}
 	     		break;
@@ -152,8 +162,7 @@ public class IssueUnit {
     	} else if (issued) {
     		simulator.setPC(simulator.getPC() + 4);
     	}
-      // We then send this to the FU, who stores in reservation station
-    	// functional unit has to choose the reservation station (done above)
+
     }
 
   }

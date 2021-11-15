@@ -98,7 +98,8 @@ public class ROBEntry {
     int pcUsed2 = instr.pc;
     for (int addr = 0; addr < ReorderBuffer.size; addr++) {
     	if (rob.buff[addr] != null) {
-	    	if (rob.buff[addr].instr.regDest == instr.regSrc1 && rob.buff[addr].instr.pc < pcUsed1) {
+	    	if (rob.buff[addr].instr.regDest == instr.regSrc1 && rob.buff[addr].instr.pc < pcUsed1
+	    			&& instr.regSrc1Used) {
 	    		if (rob.buff[addr].isComplete()) {
 	    			instr.regSrc1Value = rob.buff[addr].writeValue;
 	    			instr.regSrc1Valid = true;
@@ -107,11 +108,10 @@ public class ROBEntry {
 	    			instr.regSrc1Valid = false;
 	    		}	    			
     			pcUsed1 = rob.buff[addr].instr.pc;
-//	    		foundTag1 = true;
-//	    		instr.regSrc1Valid = false;
-//	    		instr.regSrc1Used = false;
+
 	    	}
-	    	if (rob.buff[addr].instr.regDest == instr.regSrc2  && rob.buff[addr].instr.pc < pcUsed2) {
+	    	if (rob.buff[addr].instr.regDest == instr.regSrc2  && rob.buff[addr].instr.pc < pcUsed2
+	    			&& instr.regSrc2Used) {
 	    		if (rob.buff[addr].isComplete()) {
 	    			instr.regSrc2Value = rob.buff[addr].writeValue;
 	    			instr.regSrc2Valid = true;
@@ -120,8 +120,6 @@ public class ROBEntry {
 	    			instr.regSrc2Valid = false;
 	    		}
 	    		pcUsed2 = rob.buff[addr].instr.pc;
-//	    		foundTag2 = true;
-//	    		instr.regSrc2Valid = false;
 
 	    	}
     	}

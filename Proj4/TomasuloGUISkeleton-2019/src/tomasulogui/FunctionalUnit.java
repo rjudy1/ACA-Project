@@ -55,23 +55,14 @@ public abstract class FunctionalUnit {
 	  
       //todo - start executing, ask for CDB, etc.
 	  // check station 0 then 1, repeats to allow one to execute
-      if (stations[stationToGo] != null) {
-    	  stations[stationToGo].snoop(cdb);
-    	  if (stations[stationToGo].isReady()) {
-    		  calculateResult(stationToGo);
-    		  stationDone = stationToGo;
-    		  // must add a check of cycles required because can't be done until cycles pass
-    		  // put on bus if good
-    	  }
-	  } else if (stations[(stationToGo+1)%2] != null) {
-		  stations[(stationToGo+1)%2].snoop(cdb);
-		  if (stations[(stationToGo+1)%2].isReady()) {
-			  calculateResult((stationToGo+1)%2);
-    		  stationDone = (stationToGo+1)%2;
-
-			  // must add a check of cycles required because can't be done until cycles pass
-			  // put on bus if good
-		  }
+      if (stations[stationToGo] != null && stations[stationToGo].isReady()) {
+    	  calculateResult(stationToGo);
+    	  stationDone = stationToGo;
+    	  // must add a check of cycles required because can't be done until cycles pass
+    	  // put on bus if good
+	  } else if (stations[(stationToGo+1)%2] != null && stations[(stationToGo+1)%2].isReady()) {
+		  calculateResult((stationToGo+1)%2);
+		  stationDone = (stationToGo+1)%2;
 	  }
       
   	// check reservationStations for cdb data
@@ -87,15 +78,14 @@ public abstract class FunctionalUnit {
 
   public void acceptIssue(IssuedInst inst) {
   // todo - fill in reservation station (if available) with data from inst
-	  if (stations[stationToGo] == null)
-		  stations[stationToGo] = new ReservationStation(simulator);
-	  else if (stations[(stationToGo+1)%2] == null)
-		  stations[(stationToGo+1)%2] = new ReservationStation(simulator);
-	  
-	  if (!stations[stationToGo].occupied)
-		  stations[stationToGo].loadInst(inst);
-	  else if (!stations[(stationToGo+1)%2].occupied)
-		  stations[(stationToGo+1)%2].loadInst(inst);
+	  for (int x = 0; x < 2; x++) {
+		  if (stations[x] == null) {
+			  stations[x] = new ReservationStation(simulator);
+			  stations[x].loadInst(inst);
+			  break;
+		  }
+	  } 
+	  return;
   }
 
 }
