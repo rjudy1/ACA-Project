@@ -26,6 +26,16 @@ public class ROBEntry {
   // seems like the fields are just the instruction fields of register ready, etc.?
   IssuedInst instr;
   
+  int regDestTag = -1;
+  boolean regDestUsed = false;
+
+  // might need need
+  int immediate = -1;
+
+  boolean branch = false;
+  boolean branchPrediction = false;
+  int branchTgt = -1; // important for jumps
+  
   IssuedInst.INST_TYPE opcode;
 
   public ROBEntry(ReorderBuffer buffer) {
@@ -94,40 +104,46 @@ public class ROBEntry {
     
     boolean foundTag1 = false;
     boolean foundTag2 = false;
-    int pcUsed1 = instr.pc;
-    int pcUsed2 = instr.pc;
+    int pcUsed1 = inst.pc;
+    int pcUsed2 = inst.pc;
     for (int addr = 0; addr < ReorderBuffer.size; addr++) {
     	if (rob.buff[addr] != null) {
-	    	if (rob.buff[addr].instr.regDest == instr.regSrc1 && rob.buff[addr].instr.pc < pcUsed1
-	    			&& instr.regSrc1Used) {
+	    	if (rob.buff[addr].writeReg == inst.regSrc1 && rob.buff[addr].instPC < pcUsed1
+	    			&& inst.regSrc1Used) {
 	    		if (rob.buff[addr].isComplete()) {
-	    			instr.regSrc1Value = rob.buff[addr].writeValue;
-	    			instr.regSrc1Valid = true;
+	    			inst.regSrc1Value = rob.buff[addr].writeValue;
+	    			inst.regSrc1Valid = true;
 	    		} else {
-	    			instr.regSrc1Tag = rob.buff[addr].instr.regDestTag; // set the tag
-	    			instr.regSrc1Valid = false;
+	    			inst.regSrc1Tag = rob.buff[addr].regDestTag; // set the tag
+	    			inst.regSrc1Valid = false;
 	    		}	    			
-    			pcUsed1 = rob.buff[addr].instr.pc;
+    			pcUsed1 = rob.buff[addr].instPC;
 
 	    	}
-	    	if (rob.buff[addr].instr.regDest == instr.regSrc2  && rob.buff[addr].instr.pc < pcUsed2
-	    			&& instr.regSrc2Used) {
+	    	if (rob.buff[addr].writeReg == inst.regSrc2  && rob.buff[addr].instPC < pcUsed2
+	    			&& inst.regSrc2Used) {
 	    		if (rob.buff[addr].isComplete()) {
-	    			instr.regSrc2Value = rob.buff[addr].writeValue;
-	    			instr.regSrc2Valid = true;
+	    			inst.regSrc2Value = rob.buff[addr].writeValue;
+	    			inst.regSrc2Valid = true;
 	    		} else {
-	    			instr.regSrc2Tag = rob.buff[addr].instr.regDestTag; // set the tag
-	    			instr.regSrc2Valid = false;
+	    			inst.regSrc2Tag = rob.buff[addr].instr.regDestTag; // set the tag
+	    			inst.regSrc2Valid = false;
 	    		}
-	    		pcUsed2 = rob.buff[addr].instr.pc;
+	    		pcUsed2 = rob.buff[addr].instPC;
 
 	    	}
     	}
     }
     
-//    instr.regSrc1Used = !foundTag1;
-//    instr.regSrc2Used = !foundTag2;
+    regDestTag = inst.regDestTag;
+    regDestUsed = inst.regDestUsed;
+
+//    immediate = inst.immediate;
+
+    branch = inst.branch;
+    predictTaken = inst.branchPrediction;
     
+    branchTgt = instr.branchTgt;
     writeReg = inst.regDest;
     
     // ROB checks the tags and updates if available

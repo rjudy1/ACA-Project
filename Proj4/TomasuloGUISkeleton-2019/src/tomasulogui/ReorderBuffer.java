@@ -88,7 +88,7 @@ public class ReorderBuffer {
 	    case BGTZ:
 	    	// check if was a mispredict, if so write the correct pc
 	    	if (retiree.mispredicted && !retiree.predictTaken) {
-	    		simulator.setPC(retiree.instr.getBranchTgt());
+	    		simulator.setPC(retiree.branchTgt);
 	    		simulator.squashAllInsts();
 	    		shouldAdvance = false; 
 	    	}
@@ -108,13 +108,13 @@ public class ReorderBuffer {
 		case J:
 		case JR:
 			if (retiree.resultValid) {
-				simulator.setPC(retiree.instr.branchTgt);
+				simulator.setPC(retiree.branchTgt);
 			}
 			break;
 		case JAL:
 		case JALR:
 			if (retiree.resultValid) {
-				simulator.setPC(retiree.instr.branchTgt);
+				simulator.setPC(retiree.branchTgt);
 				simulator.memory.setIntDataAtAddr(31,retiree.instPC);
 			}
 			break;
