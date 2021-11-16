@@ -87,15 +87,20 @@ public class ReorderBuffer {
 	    case BGEZ:
 	    case BGTZ:
 	    	// check if was a mispredict, if so write the correct pc
-	    	if (retiree.mispredicted && !retiree.predictTaken) {
-	    		simulator.setPC(retiree.branchTgt);
-	    		simulator.squashAllInsts();
-	    		shouldAdvance = false; 
-	    	}
-	    	else if (retiree.mispredicted && retiree.predictTaken) {
-	    		simulator.setPC(retiree.instPC+4);
-	    		simulator.squashAllInsts();
-	    		shouldAdvance = false; 
+//	    	if (retiree.mispredicted && !retiree.predictTaken) {
+//	    		simulator.setPC(retiree.branchTgt);
+//	    		simulator.squashAllInsts();
+//	    		shouldAdvance = false; 
+//	    	}
+//	    	else if (retiree.mispredicted && retiree.predictTaken) {
+//	    		simulator.setPC(retiree.instPC+4);
+//	    		simulator.squashAllInsts();
+//	    		shouldAdvance = false; 
+//	    	}
+	    	if (retiree.mispredicted) {
+				simulator.setPC(retiree.branchTgt);
+				simulator.squashAllInsts();
+				shouldAdvance = false;
 	    	}
 	    	break;
 	    case STORE:
@@ -107,29 +112,24 @@ public class ReorderBuffer {
 	    	break;
 		case J:
 		case JR:
-			if (retiree.resultValid) {
-				simulator.setPC(retiree.branchTgt);
-			}
+//			if (retiree.resultValid) {
+//			}
+			simulator.setPC(retiree.branchTgt);
 			break;
 		case JAL:
 		case JALR:
-			if (retiree.resultValid) {
+//			if (retiree.resultValid) {
 				simulator.setPC(retiree.branchTgt);
-				simulator.memory.setIntDataAtAddr(31,retiree.instPC);
-			}
+				simulator.memory.setIntDataAtAddr(31, retiree.instPC);
+//			}
 			break;
 	   	default:
 	    }
 	    
-//	    retiree.complete = true;
 	    
-	    if (retiree.opcode == IssuedInst.INST_TYPE.NOP) {
-	    	shouldAdvance = true;
-	    } else {
-	    	shouldAdvance = retiree.isComplete() && !retiree.mispredicted;
-	    }
-	    
-	    // if mispredict branch, won't do normal advance
+    	shouldAdvance = retiree.isComplete() && !retiree.mispredicted;
+	   
+    	// if mispredict branch, won't do normal advance
 	    if (shouldAdvance) {
 	       numRetirees++;
 	       buff[frontQ] = null;
@@ -148,8 +148,19 @@ public class ReorderBuffer {
 					  || buff[stat].opcode == IssuedInst.INST_TYPE.JALR)) {
 //				  buff[stat].branchTgtValid = true;
 				  buff[stat].branchTgt = cdb.getDataValue();
+				  buff[stat].writeValue = cdb.getDataValue(); // for display purposes
 				  buff[stat].complete = true;
 				  buff[stat].resultValid = true;
+			  } else if ((buff[stat].opcode == IssuedInst.INST_TYPE.BEQ || buff[stat].opcode == IssuedInst.INST_TYPE.BNE
+					  || buff[stat].opcode == IssuedInst.INST_TYPE.BLTZ || buff[stat].opcode == IssuedInst.INST_TYPE.BLEZ
+					  || buff[stat].opcode == IssuedInst.INST_TYPE.BGTZ || buff[stat].opcode == IssuedInst.INST_TYPE.BGEZ)
+						  && cdb.getDataTag() == -2) {
+				  // shorting from branch unit
+				  buff[stat].branchTgt = simulator.branchUnit.stations[cdb.getDataValue()].address;
+				  buff[stat].complete = true;
+				  buff[stat].writeValue = buff[stat].branchTgt;
+				  buff[stat].setBranchTaken(simulator.branchUnit.stations[cdb.getDataValue()].isTaken);
+					   // for display
 			  } else if (buff[stat].regDestTag == cdb.getDataTag()) {		  
 				  buff[stat].writeValue = cdb.getDataValue();
 				  buff[stat].resultValid = true;

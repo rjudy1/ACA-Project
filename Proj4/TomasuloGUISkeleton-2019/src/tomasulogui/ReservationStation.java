@@ -29,6 +29,10 @@ public class ReservationStation {
   int address;
   boolean predictedTaken = false;
   
+  boolean isTaken;
+  int pc;
+  int immediate;
+  
   boolean occupied = false;
 
   public ReservationStation(PipelineSimulator sim) {
@@ -92,6 +96,10 @@ public class ReservationStation {
 	  data2 = inst.regSrc2Value;
 	  data2Valid = inst.regSrc2Valid;
 	  function = inst.getOpcode();
+	  
+	  pc = inst.pc;
+	  immediate = inst.immediate;
+	  
 	  // branch setup??
 	  if (inst.branch) {
 		  predictedTaken = inst.branchPrediction;

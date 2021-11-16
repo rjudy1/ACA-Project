@@ -163,9 +163,6 @@ public class IssueUnit {
 		    	case STORE:
 		    		simulator.loader.acceptIssue(issuee);
 		    		break;
-		    		
-
-		    	
 		    	case BEQ:
 		    	case BNE:
 		    	case BLTZ:
@@ -180,11 +177,11 @@ public class IssueUnit {
 		    	case J:
 		    	case JAL:
 		    		// straight to reorder buffer
-		    		issuee.branchTgt = issuee.pc + 4 + issuee.immediate;
 		    		break;
 		    		
 		    	case JR:
 		    	case JALR:
+		    		break;
 		    	}
 	    	}
     	

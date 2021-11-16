@@ -30,53 +30,43 @@ public class BranchUnit
     public int calculateResult(int station) {
     	if (canWriteback) {
             requestWriteback = false;
-       }
-       if (!requestWriteback) {
+    	}
+    	if (!requestWriteback) {
 	       	int operand1 = stations[station].getData1();
 	       	int operand2 = stations[station].getData2();
-	       	boolean branchTaken;
-	       	// ALU 
+	       		       	// ALU 
 	       	switch(stations[station].getFunction()) {	
 	       	case BEQ:
-	       		branchTaken = operand1 == operand2;
+	       		stations[station].isTaken = operand1 == operand2;
 	       		break;
 	       	case BNE:
-	       		branchTaken = operand1 != operand2;
+	       		stations[station].isTaken = operand1 != operand2;
 	       		break;
 	       	case BLEZ:
-	      		branchTaken = operand1 < 0;
+	       		stations[station].isTaken = operand1 < 0;
 	       		break;
 	       	case BLTZ:
-	       		branchTaken = operand1 <= 0;
+	       		stations[station].isTaken = operand1 <= 0;
 	       		break;
 	       	case BGEZ:
-	       		branchTaken = operand1 >= 0;
+	       		stations[station].isTaken = operand1 >= 0;
 	       		break;
 	       	case BGTZ:
-	       		branchTaken = operand1 > 0;
+	       		stations[station].isTaken = operand1 > 0;
 	       		break;       		
-	//       	case J: // jumps just get to to reorder buffer
-	//       	case JAL:
-	//       	case JALR:
-	//       	case Instruction.INST_JR:
-	//       		result = operand1; // register value
-	//       		break;
 	   		default:
 	   			break;
-	       	}    
-	       	requestWriteback = true;
-	       	destTag = stations[station].getDestTag();
-	       	destVal = simulator.getPC() + operand2; // set target
+	       	}
+	       	
+       		stations[station].address = stations[station].pc + 4;
+	       	if (stations[station].isTaken)
+	       		stations[station].address += stations[station].immediate;
+
+       		requestWriteback = true;
+	       	destTag = -2;
+	       	destVal = station; // set target
        }
        
-       // check reservationStations for cdb data
-       if (simulator.cdb.getDataValid()) {
-           for (int i = 0; i < 2; i++) {
-             if (stations[i] != null) {
-               stations[i].snoop(simulator.cdb);
-             }
-           }
-       }
        return destVal;
     }
 
