@@ -35,6 +35,19 @@ public class IssueUnit {
     	issuee = IssuedInst.createIssuedInst(inst);
     	issuee.pc = simulator.getPC();
     	
+    
+    	if (issuee.getOpcode() == IssuedInst.INST_TYPE.J ||
+	    		issuee.getOpcode() == IssuedInst.INST_TYPE.JAL ||
+	    		issuee.getOpcode() == IssuedInst.INST_TYPE.JALR ||
+	    		issuee.getOpcode() == IssuedInst.INST_TYPE.JR ||
+	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BEQ ||
+	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BGEZ ||
+	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BGTZ ||
+	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BLEZ ||
+	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BLTZ ||
+	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BNE) {
+    		issuee.setBranch();
+    	}
     	// check if can issue/is station available
     	int stationNumber = -1;
     	issued = false;
@@ -184,12 +197,7 @@ public class IssueUnit {
 		    		break;
 		    	}
 	    	}
-    	
-	    	if (issuee.branch) {
-	    		simulator.setPC(issuee.branchTgt);
-	    	} else {
 	    		simulator.setPC(simulator.getPC() + 4);
-	    	}
     	}
     }
 
