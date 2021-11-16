@@ -120,7 +120,7 @@ public class ReorderBuffer {
 		case JALR:
 //			if (retiree.resultValid) {
 				simulator.setPC(retiree.branchTgt);
-				simulator.memory.setIntDataAtAddr(31, retiree.instPC);
+				simulator.regs.setReg(31, retiree.instPC);
 //			}
 			break;
 	   	default:

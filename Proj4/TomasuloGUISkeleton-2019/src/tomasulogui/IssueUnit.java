@@ -197,6 +197,7 @@ public class IssueUnit {
 		    		break;
 		    	}
 	    	}
+	    	if (!issuee.isBranch())
 	    		simulator.setPC(simulator.getPC() + 4);
     	}
     }
