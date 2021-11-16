@@ -139,6 +139,12 @@ public class ROBEntry {
     branch = inst.branch;
     predictTaken = inst.branchPrediction;
     
+    complete = inst.getOpcode() == IssuedInst.INST_TYPE.J || 
+    		   inst.getOpcode() == IssuedInst.INST_TYPE.JAL ||
+    		   inst.getOpcode() == IssuedInst.INST_TYPE.NOP ||
+    		   inst.getOpcode() == IssuedInst.INST_TYPE.JR && inst.regSrc1Valid ||
+    		   inst.getOpcode() == IssuedInst.INST_TYPE.JALR && inst.regSrc1Valid;
+    
     if (opcode == IssuedInst.INST_TYPE.JR || opcode == IssuedInst.INST_TYPE.JALR) {
    		branchTgt = inst.regSrc1Value;
     } else {
