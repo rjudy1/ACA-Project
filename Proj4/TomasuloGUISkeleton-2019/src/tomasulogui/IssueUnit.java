@@ -52,35 +52,14 @@ public class IssueUnit {
 	       	case SLL:
 	    	case SRL:
 	    	case SRA:
-//	    		for (int i = 0; i < 2; i++) {
-//	    			if (simulator.alu.stations[i] == null) {
-//	    				issued = true;
-////	    				stationNumber = i;
-//	    				break;
-//	    			} 
-//	     		}
 	    		issued = simulator.alu.isReservationStationAvailable();
 	     		break;
 	
 	    	case MUL:
-//	    		for (int i = 0; i < 2; i++) {
-//	    			if (simulator.multiplier.stations[i] == null) {
-//	    				issued = true;
-//	    				stationNumber = i;
-//	    				break;
-//	    			}
-//	    		}
 	    		issued = simulator.multiplier.isReservationStationAvailable();
 	     		break;
 	    		
 	    	case DIV:
-//	    		for (int i = 0; i < 2; i++) {
-//		     		if (simulator.divider.stations[i] == null) {
-//		     			issued = true;
-////	    				stationNumber = i;
-//		     			break;
-//		     		} 
-//	     		}
 	    		issued = simulator.divider.isReservationStationAvailable();
 	     		break;
 	    		
@@ -88,11 +67,6 @@ public class IssueUnit {
 	    		// I think store is going to have an issue as it should go straight to reorder buffer
 	    	case STORE:
 	    		issued = simulator.loader.isReservationStationAvail();
-//	    		if (simulator.loader.isReservationStationAvail()) {
-//	    			issued = true;
-////    				stationNumber = i;
-//	    			break;
-//	    		}
 	    		break;
 	    		
 	    	case HALT:    		
@@ -110,14 +84,7 @@ public class IssueUnit {
 	    	case BLTZ:
 	    	case BLEZ:
 	    	case BGEZ:
-//	    	case BGTZ:
-//	    		for (int i = 0; i < 2; i++) {
-//		     		if (simulator.branchUnit.stations[i] == null) {
-//		     			issued = true;
-////	    				stationNumber = i;
-//		     			break;
-//		     		}
-//	    		}
+	    	case BGTZ:
 	    		issued = simulator.branchUnit.isReservationStationAvailable();
 	     		break;
 	    	}
@@ -143,7 +110,7 @@ public class IssueUnit {
 	    	// puts result from predictBranch
 	    	//     if pred taken, incr PC otherwise
 	    	if (issuee.isBranch()) {
-	    		issuee.branch = true;
+//	    		issuee.branch = true;
 	    		simulator.btb.predictBranch(issuee);
 	    	}
 	    	
@@ -181,57 +148,23 @@ public class IssueUnit {
 		    	case SRL:
 		    	case SRA:
 		    		simulator.alu.acceptIssue(issuee);
-//		    		for (int i = 0; i < 2; i++) {
-//		    			if (simulator.alu.stations[i] == null) {
-//		    				simulator.alu.acceptIssue(issuee);
-//		    				issued = true;
-//		    				break;
-//		    			} 
-//		     		}
 		     		break;
 		
 		    	case MUL:
 		    		simulator.multiplier.acceptIssue(issuee);
-//		    		for (int i = 0; i < 2; i++) {
-//		    			if (simulator.multiplier.stations[i] == null) {
-//		    				simulator.multiplier.acceptIssue(issuee);
-//		    				issued = true;
-//		    				break;
-//		    			}
-//		    		}
 		     		break;
 		    		
 		    	case DIV:
 		    		simulator.divider.acceptIssue(issuee);
-//		    		for (int i = 0; i < 2; i++) {
-//			     		if (simulator.divider.stations[i] == null) {
-//			     			simulator.divider.acceptIssue(issuee);
-//			     			issued = true;
-//			     			break;
-//			     		} 
-//		     		}
 		     		break;
 		    		
 		    	case LOAD:
 		    		// I think store is going to have an issue as it should go straight to reorder buffer
 		    	case STORE:
 		    		simulator.loader.acceptIssue(issuee);
-//		    		if (simulator.loader.isReservationStationAvail()) {
-//		    			simulator.loader.acceptIssue(issuee);
-//		    			issued = true;
-//		    			break;
-//		    		}
 		    		break;
 		    		
-		    	case HALT:    		
-		    	case NOP:
-		    	case J:
-		    	case JAL:
-		    	case JR:
-		    	case JALR:
-		    		// straight to reorder buffer
-//		    		issued = true;
-		    		break;
+
 		    	
 		    	case BEQ:
 		    	case BNE:
@@ -239,15 +172,19 @@ public class IssueUnit {
 		    	case BLEZ:
 		    	case BGEZ:
 		    	case BGTZ:
-//		    		for (int i = 0; i < 2; i++) {
-//			     		if (simulator.branchUnit.stations[i] == null) {
-//			     			simulator.branchUnit.acceptIssue(issuee);
-//			     			issued = true;
-//			     			break;
-//			     		}
-//		    		}
 		    		simulator.branchUnit.acceptIssue(issuee);
-		     		break;
+		    		break;
+		     		// branches fall through to jump because immediate is the same
+		    	case HALT:    		
+		    	case NOP:
+		    	case J:
+		    	case JAL:
+		    		// straight to reorder buffer
+		    		issuee.branchTgt = issuee.pc + 4 + issuee.immediate;
+		    		break;
+		    		
+		    	case JR:
+		    	case JALR:
 		    	}
 	    	}
     	

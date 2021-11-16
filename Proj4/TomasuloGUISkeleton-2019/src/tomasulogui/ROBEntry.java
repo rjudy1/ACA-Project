@@ -22,10 +22,6 @@ public class ROBEntry {
   int writeValue = -1;  
   boolean resultValid = false;
   
-
-  // seems like the fields are just the instruction fields of register ready, etc.?
-  IssuedInst instr;
-  
   int regDestTag = -1;
   boolean regDestUsed = false;
 
@@ -34,7 +30,9 @@ public class ROBEntry {
 
   boolean branch = false;
   boolean branchPrediction = false;
+  int branchTgtTag = -1;
   int branchTgt = -1; // important for jumps
+  boolean branchTgtValid = false;
   
   IssuedInst.INST_TYPE opcode;
 
@@ -99,8 +97,6 @@ public class ROBEntry {
     // 2. update the fields of the ROBEntry, as shown in the 1st line of code above
     
     // look through all active instructions in reorder buffer to see if dest is used
-    instr = inst;
-    opcode = instr.opcode;
     
     boolean foundTag1 = false;
     boolean foundTag2 = false;
@@ -113,8 +109,11 @@ public class ROBEntry {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc1Value = rob.buff[addr].writeValue;
 	    			inst.regSrc1Valid = true;
+	    			branchTgtValid = true;
 	    		} else {
 	    			inst.regSrc1Tag = rob.buff[addr].regDestTag; // set the tag
+	    			branchTgtTag = rob.buff[addr].regDestTag; // for JALR, JR
+	    			branchTgtValid = false;
 	    			inst.regSrc1Valid = false;
 	    		}	    			
     			pcUsed1 = rob.buff[addr].instPC;
@@ -126,7 +125,7 @@ public class ROBEntry {
 	    			inst.regSrc2Value = rob.buff[addr].writeValue;
 	    			inst.regSrc2Valid = true;
 	    		} else {
-	    			inst.regSrc2Tag = rob.buff[addr].instr.regDestTag; // set the tag
+	    			inst.regSrc2Tag = rob.buff[addr].regDestTag; // set the tag
 	    			inst.regSrc2Valid = false;
 	    		}
 	    		pcUsed2 = rob.buff[addr].instPC;
@@ -143,9 +142,16 @@ public class ROBEntry {
     branch = inst.branch;
     predictTaken = inst.branchPrediction;
     
-    branchTgt = instr.branchTgt;
-    writeReg = inst.regDest;
+    if (opcode == IssuedInst.INST_TYPE.JR || opcode == IssuedInst.INST_TYPE.JALR) {
+   		branchTgt = inst.regSrc1Value;
+    } else {
+    	// all other branches use this and irrelevant for non branches
+        branchTgt = inst.pc + 4 + inst.immediate;
+    }
     
+    writeReg = inst.regDest;
+    opcode = inst.opcode;
+
     // ROB checks the tags and updates if available
     
   }
