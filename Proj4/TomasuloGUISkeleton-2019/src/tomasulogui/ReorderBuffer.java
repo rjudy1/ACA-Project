@@ -142,23 +142,19 @@ public class ReorderBuffer {
 
   public void readCDB(CDB cdb) {
 	  for (int stat = 0; stat < size; stat++) { // stat = station num
-		  if (buff[stat] != null && cdb.getDataValid()) { 
-			  if (buff[stat].regDestTag == cdb.getDataTag()) {		  
+		  if (buff[stat] != null && cdb.getDataValid()) { 			  
+			  if (buff[stat].branchTgtTag == cdb.getDataTag() 
+					  && (buff[stat].opcode == IssuedInst.INST_TYPE.JR
+					  || buff[stat].opcode == IssuedInst.INST_TYPE.JALR)) {
+//				  buff[stat].branchTgtValid = true;
+				  buff[stat].branchTgt = cdb.getDataValue();
+				  buff[stat].complete = true;
+				  buff[stat].resultValid = true;
+			  } else if (buff[stat].regDestTag == cdb.getDataTag()) {		  
 				  buff[stat].writeValue = cdb.getDataValue();
 				  buff[stat].resultValid = true;
-				  buff[stat].complete = (buff[stat].opcode != IssuedInst.INST_TYPE.JR
-						  && buff[stat].opcode != IssuedInst.INST_TYPE.JALR);
+				  buff[stat].complete = true;
 			  }
-			  
-			  if (buff[stat].branchTgtTag == cdb.getDataTag()) {
-				  buff[stat].branchTgtValid = true;
-				  buff[stat].branchTgt = cdb.getDataValue();
-				  buff[stat].complete = (buff[stat].opcode == IssuedInst.INST_TYPE.JR
-						  || buff[stat].opcode == IssuedInst.INST_TYPE.JALR);
-				  buff[stat].resultValid = buff[stat].complete;
-			  }
-			  // can just go ahead and let this be assigned also but only used on jumps
-//			  buff[stat].branchTgt = cdb.getDataValue();
 		  }
 	  }	  
   }

@@ -32,7 +32,6 @@ public class ROBEntry {
   boolean branchPrediction = false;
   int branchTgtTag = -1;
   int branchTgt = -1; // important for jumps
-  boolean branchTgtValid = false;
   
   IssuedInst.INST_TYPE opcode;
 
@@ -109,11 +108,9 @@ public class ROBEntry {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc1Value = rob.buff[addr].writeValue;
 	    			inst.regSrc1Valid = true;
-	    			branchTgtValid = true;
 	    		} else {
 	    			inst.regSrc1Tag = rob.buff[addr].regDestTag; // set the tag
 	    			branchTgtTag = rob.buff[addr].regDestTag; // for JALR, JR
-	    			branchTgtValid = false;
 	    			inst.regSrc1Valid = false;
 	    		}	    			
     			pcUsed1 = rob.buff[addr].instPC;
@@ -151,6 +148,8 @@ public class ROBEntry {
     
     writeReg = inst.regDest;
     opcode = inst.opcode;
+    
+    
 
     // ROB checks the tags and updates if available
     
