@@ -33,6 +33,13 @@ public class ROBEntry {
   int branchTgtTag = -1;
   int branchTgt = -1; // important for jumps
   
+  // for stores
+  int storeAddr = -1;
+  int storeValueTag = -1;
+  int storeValue = -1;
+  boolean storeAddrValid = false;
+  boolean storeValueValid = false;
+  
   IssuedInst.INST_TYPE opcode;
 
   public ROBEntry(ReorderBuffer buffer) {
@@ -96,7 +103,10 @@ public class ROBEntry {
     // 2. update the fields of the ROBEntry, as shown in the 1st line of code above
     
     // look through all active instructions in reorder buffer to see if dest is used
-    
+    // division of responsibility for snooping to functional unit and rob
+    // default storeValueValid as true like the registers
+    storeValueValid = true;
+]    
     boolean foundTag1 = false;
     boolean foundTag2 = false;
     int pcUsed1 = inst.pc;
@@ -120,10 +130,14 @@ public class ROBEntry {
 	    			&& inst.regSrc2Used) {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc2Value = rob.buff[addr].writeValue;
+	    			storeValue = rob.buff[addr].writeValue;
 	    			inst.regSrc2Valid = true;
+	    			storeValueValid = true;
 	    		} else {
 	    			inst.regSrc2Tag = rob.buff[addr].regDestTag; // set the tag
-	    			inst.regSrc2Valid = false;
+	    			storeValueTag = rob.buff[addr].regDestTag;
+	    			inst.regSrc2Valid = (rob.buff[addr].opcode == IssuedInst.INST_TYPE.STORE); // should be false unless its a store and then this field is bypassed in unit
+	    			storeValueValid = false;
 	    		}
 	    		pcUsed2 = rob.buff[addr].instPC;
 
@@ -131,6 +145,7 @@ public class ROBEntry {
     	}
     }
     
+    // allows special exception for tagging store outputs
     regDestTag = inst.regDestTag;
     regDestUsed = inst.regDestUsed;
 
@@ -145,13 +160,7 @@ public class ROBEntry {
     		   inst.getOpcode() == IssuedInst.INST_TYPE.JR && inst.regSrc1Valid ||
     		   inst.getOpcode() == IssuedInst.INST_TYPE.JALR && inst.regSrc1Valid;
     
-    if (opcode == IssuedInst.INST_TYPE.JR || opcode == IssuedInst.INST_TYPE.JALR) {
-   		branchTgt = inst.regSrc1Value;
-    } else {
-    	// all other branches use this and irrelevant for non branches
-        branchTgt = inst.pc + 4 + inst.immediate;
-    }
-    
+
     writeReg = inst.regDest;
     opcode = inst.opcode;
     

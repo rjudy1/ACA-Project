@@ -91,13 +91,6 @@ public abstract class FunctionalUnit {
   // todo - fill in reservation station (if available) with data from inst
 	  stations[stationToInsert] = new ReservationStation(simulator);
 	  stations[stationToInsert].loadInst(inst);
-//	  for (int x = 0; x < 2; x++) {
-//		  if (stations[x] == null) {
-//			  stations[x] = new ReservationStation(simulator);
-//			  stations[x].loadInst(inst);
-//			  break;
-//		  }
-//	  } 
 	  return;
   }
 

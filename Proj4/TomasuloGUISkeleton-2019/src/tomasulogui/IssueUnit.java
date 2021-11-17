@@ -35,7 +35,7 @@ public class IssueUnit {
     	issuee = IssuedInst.createIssuedInst(inst);
     	issuee.pc = simulator.getPC();
     	
-    
+    	// set flag to indicate is a branch
     	if (issuee.getOpcode() == IssuedInst.INST_TYPE.J ||
 	    		issuee.getOpcode() == IssuedInst.INST_TYPE.JAL ||
 	    		issuee.getOpcode() == IssuedInst.INST_TYPE.JALR ||
@@ -77,9 +77,10 @@ public class IssueUnit {
 	     		break;
 	    		
 	    	case LOAD:
-	    		// I think store is going to have an issue as it should go straight to reorder buffer
-	    	case STORE:
 	    		issued = simulator.loader.isReservationStationAvail();
+	    		break;
+	    	case STORE:
+	    		issued = simulator.alu.isReservationStationAvailable();
 	    		break;
 	    		
 	    	case HALT:    		
@@ -104,18 +105,17 @@ public class IssueUnit {
     	}
     	
     	if (issued) {
-
-	
-	    	// ask G about cycle when to do this
-	    	if (issuee.regSrc1Used) {
+    	 	if (issuee.regSrc1Used) {
 	    		issuee.regSrc1Value = simulator.regs.getReg(issuee.regSrc1);
 	    	}
 	    	if (issuee.regSrc2Used) {
 	    		issuee.regSrc2Value = simulator.regs.getReg(issuee.regSrc2);
-	    	} else if (inst instanceof ITypeInst || inst.getOpcode() == Instruction.INST_SLL
-	    			|| inst.getOpcode() == Instruction.INST_SRL || inst.getOpcode() == Instruction.INST_SRA) {
-	    		issuee.regSrc2Value = issuee.immediate;
 	    	}
+//	    	else if (inst instanceof ITypeInst || inst.getOpcode() == Instruction.INST_SLL
+//	    			|| inst.getOpcode() == Instruction.INST_SRL || inst.getOpcode() == Instruction.INST_SRA) {
+//	    		issuee.regSrc2Value = issuee.immediate;
+//	    	}
+	    	// true until we check the tags
 			issuee.regSrc1Valid = true;
 			issuee.regSrc2Valid = true;
 	    	
@@ -172,9 +172,11 @@ public class IssueUnit {
 		     		break;
 		    		
 		    	case LOAD:
+		    		simulator.loader.acceptIssue(issuee);
+		    		break;
 		    		// I think store is going to have an issue as it should go straight to reorder buffer
 		    	case STORE:
-		    		simulator.loader.acceptIssue(issuee);
+		    		simulator.alu.acceptIssue(issuee);
 		    		break;
 		    	case BEQ:
 		    	case BNE:

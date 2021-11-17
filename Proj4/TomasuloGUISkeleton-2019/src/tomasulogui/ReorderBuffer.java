@@ -55,9 +55,6 @@ public class ReorderBuffer {
     // TODO - this is where you look at the type of instruction and
     // figure out how to retire it properly
     // case statement
-    
-    // might not happen in the same clock
-//	readCDB(simulator.cdb);
 
     
     if (retiree.opcode != null && retiree.isComplete() || retiree.opcode == IssuedInst.INST_TYPE.NOP) {
@@ -87,16 +84,6 @@ public class ReorderBuffer {
 	    case BGEZ:
 	    case BGTZ:
 	    	// check if was a mispredict, if so write the correct pc
-//	    	if (retiree.mispredicted && !retiree.predictTaken) {
-//	    		simulator.setPC(retiree.branchTgt);
-//	    		simulator.squashAllInsts();
-//	    		shouldAdvance = false; 
-//	    	}
-//	    	else if (retiree.mispredicted && retiree.predictTaken) {
-//	    		simulator.setPC(retiree.instPC+4);
-//	    		simulator.squashAllInsts();
-//	    		shouldAdvance = false; 
-//	    	}
 	    	if (retiree.mispredicted) {
 				simulator.setPC(retiree.branchTgt);
 				simulator.squashAllInsts();
@@ -105,7 +92,7 @@ public class ReorderBuffer {
 	    	break;
 	    case STORE:
 	    	// put in memory if not cleared/voided
-	    	simulator.memory.setIntDataAtAddr(retiree.getWriteReg(), retiree.getWriteValue());
+	    	simulator.memory.setIntDataAtAddr(retiree.storeAddr, retiree.storeValue);
 	    	break;
 	    case HALT:
 	    	halted = true;
@@ -119,7 +106,7 @@ public class ReorderBuffer {
 		case JAL:
 		case JALR:
 //			if (retiree.resultValid) {
-				simulator.setPC(retiree.branchTgt);
+//				simulator.setPC(retiree.branchTgt);
 				simulator.regs.setReg(31, retiree.instPC);
 //			}
 			break;
@@ -141,30 +128,37 @@ public class ReorderBuffer {
   }
 
   public void readCDB(CDB cdb) {
-	  for (int stat = 0; stat < size; stat++) { // stat = station num
-		  if (buff[stat] != null && cdb.getDataValid()) { 			  
-			  if (buff[stat].branchTgtTag == cdb.getDataTag() 
-					  && (buff[stat].opcode == IssuedInst.INST_TYPE.JR
-					  || buff[stat].opcode == IssuedInst.INST_TYPE.JALR)) {
-//				  buff[stat].branchTgtValid = true;
-				  buff[stat].branchTgt = cdb.getDataValue();
-				  buff[stat].writeValue = cdb.getDataValue(); // for display purposes
-				  buff[stat].complete = true;
-				  buff[stat].resultValid = true;
-			  } else if ((buff[stat].opcode == IssuedInst.INST_TYPE.BEQ || buff[stat].opcode == IssuedInst.INST_TYPE.BNE
-					  || buff[stat].opcode == IssuedInst.INST_TYPE.BLTZ || buff[stat].opcode == IssuedInst.INST_TYPE.BLEZ
-					  || buff[stat].opcode == IssuedInst.INST_TYPE.BGTZ || buff[stat].opcode == IssuedInst.INST_TYPE.BGEZ)
+	  for (int slot = 0; slot < size; slot++) { // stat = station num
+		  if (buff[slot] != null && cdb.getDataValid()) { 			  
+			  if (buff[slot].branchTgtTag == cdb.getDataTag() 
+					  && (buff[slot].opcode == IssuedInst.INST_TYPE.JR
+					  || buff[slot].opcode == IssuedInst.INST_TYPE.JALR)) {
+				  buff[slot].branchTgt = cdb.getDataValue();
+				  buff[slot].writeValue = cdb.getDataValue(); // for display purposes
+				  buff[slot].complete = true;
+				  buff[slot].resultValid = true;
+			  } else if ((buff[slot].opcode == IssuedInst.INST_TYPE.BEQ || buff[slot].opcode == IssuedInst.INST_TYPE.BNE
+					  || buff[slot].opcode == IssuedInst.INST_TYPE.BLTZ || buff[slot].opcode == IssuedInst.INST_TYPE.BLEZ
+					  || buff[slot].opcode == IssuedInst.INST_TYPE.BGTZ || buff[slot].opcode == IssuedInst.INST_TYPE.BGEZ)
 						  && cdb.getDataTag() == -2) {
 				  // shorting from branch unit
-				  buff[stat].branchTgt = simulator.branchUnit.stations[cdb.getDataValue()].address;
-				  buff[stat].complete = true;
-				  buff[stat].writeValue = buff[stat].branchTgt;
-				  buff[stat].setBranchTaken(simulator.branchUnit.stations[cdb.getDataValue()].isTaken);
+				  buff[slot].branchTgt = simulator.branchUnit.stations[cdb.getDataValue()].address;
+				  buff[slot].complete = true;
+				  buff[slot].writeValue = buff[slot].branchTgt;
+				  buff[slot].setBranchTaken(simulator.branchUnit.stations[cdb.getDataValue()].isTaken);
 					   // for display
-			  } else if (buff[stat].regDestTag == cdb.getDataTag()) {		  
-				  buff[stat].writeValue = cdb.getDataValue();
-				  buff[stat].resultValid = true;
-				  buff[stat].complete = true;
+			  } else if (buff[slot].opcode == IssuedInst.INST_TYPE.STORE && buff[slot].regDestTag == cdb.getDataTag()) { 
+				  buff[slot].storeAddr = cdb.getDataValue();
+				  buff[slot].storeAddrValid = true;
+				  buff[slot].complete = buff[slot].storeValueValid;
+			  } else if (buff[slot].opcode == IssuedInst.INST_TYPE.STORE && buff[slot].storeValueTag == cdb.getDataTag()){
+				  buff[slot].storeValue = cdb.getDataValue();
+				  buff[slot].storeValueValid = true;
+				  buff[slot].complete = buff[slot].storeAddrValid;
+			  } else if (buff[slot].regDestTag == cdb.getDataTag()) {		  
+				  buff[slot].writeValue = cdb.getDataValue();
+				  buff[slot].resultValid = true;
+				  buff[slot].complete = true;
 			  }
 		  }
 	  }	  

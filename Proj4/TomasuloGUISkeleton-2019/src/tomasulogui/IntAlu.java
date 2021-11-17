@@ -50,37 +50,47 @@ public class IntAlu extends FunctionalUnit{
     if (!requestWriteback) {
     	int operand1 = stations[station].getData1();
     	int operand2 = stations[station].getData2();
+    	int imm = stations[station].immediate;
     	// ALU 
     	switch(stations[station].getFunction()) {
     	case ADD:
-    	case ADDI:
-    	case STORE:
-    	case LOAD:
     		destVal = operand1 + operand2;
     		break;
+    	case ADDI:
+    		destVal = operand1 + imm;
+    		break;
+
+    	case STORE:
+//    	case LOAD:
+    		destVal = operand1 + imm;
+    		break;
     	case SUB:
-    	case ANDI:
     		destVal = operand1 - operand2; 
     		break;
+    	case ANDI:
+    		destVal = operand1 & imm;
     	case AND:
     		destVal = operand1 & operand2;
     		break;
     	case OR:
-    	case ORI:
     		destVal = operand1 | operand2;
+    	case ORI:
+    		destVal = operand1 | imm;
     		break;
     	case XOR:
-    	case XORI:
     		destVal = operand1 ^ operand2;    		
     		break;
+    	case XORI:
+    		destVal = operand1 ^ imm;    		
+    		break;
     	case SLL:
-    		destVal = operand1 << operand2;
+    		destVal = operand1 << imm;
     		break;
     	case SRL:
-    		destVal = operand1 >>> operand2;
+    		destVal = operand1 >>> imm;
     		break;
     	case SRA:
-    		destVal = operand1 >> operand2;
+    		destVal = operand1 >> imm;
     		break;    		
 		default:
 			break;

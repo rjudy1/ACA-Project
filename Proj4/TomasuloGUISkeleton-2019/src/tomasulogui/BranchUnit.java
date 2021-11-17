@@ -58,12 +58,14 @@ public class BranchUnit
 	   			break;
 	       	}
 	       	
+	       	simulator.btb.setBranchResult(stations[station].pc, stations[station].isTaken);
+	       	
        		stations[station].address = stations[station].pc + 4;
 	       	if (stations[station].isTaken)
 	       		stations[station].address += stations[station].immediate;
 
        		requestWriteback = true;
-	       	destTag = -2;
+	       	destTag = -2;// use as a special flag to indicate a branch target just resolved
 	       	destVal = station; // set target
        }
        
