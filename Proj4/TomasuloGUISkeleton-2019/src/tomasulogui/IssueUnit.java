@@ -86,10 +86,17 @@ public class IssueUnit {
 	    	case HALT:    		
 	    	case NOP:
 	    	case J:
-	    	case JAL:
 	    	case JR:
+	    		issued = true;
+	    		break;
+
+	    	case JAL:
+	    		issuee.regDest = 31;
+	    		issued = true;
+	    		break;
 	    	case JALR:
 	    		// straight to reorder buffer
+	    		issuee.regDest = 31;
 	    		issued = true;
 	    		break;
 	    	

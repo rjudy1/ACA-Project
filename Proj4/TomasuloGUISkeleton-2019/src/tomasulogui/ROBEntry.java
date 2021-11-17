@@ -106,7 +106,7 @@ public class ROBEntry {
     // division of responsibility for snooping to functional unit and rob
     // default storeValueValid as true like the registers
     storeValueValid = true;
-]    
+ 
     boolean foundTag1 = false;
     boolean foundTag2 = false;
     int pcUsed1 = inst.pc;
@@ -145,7 +145,7 @@ public class ROBEntry {
     	}
     }
     
-    // allows special exception for tagging store outputs
+    // allows special exception for tagging store/jalr/jal outputs
     regDestTag = inst.regDestTag;
     regDestUsed = inst.regDestUsed;
 

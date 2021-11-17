@@ -17,6 +17,7 @@
 -- 
 Begin Assembly
 -- Stack will be at Org5000 - R30 is SP
+JALR R0
 ADDI R30, R0, 5000
 -- Data is at Org 4000
 ADDI R4, R0, 4000
