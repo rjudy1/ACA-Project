@@ -164,7 +164,7 @@ public class ROBEntry {
     writeReg = inst.regDest;
     opcode = inst.opcode;
     
-    writeValue = branchTgt;// display only for jumps
+    writeValue = inst.pc+4;// defaults to this for jal/jalr
 
     // ROB checks the tags and updates if available
     

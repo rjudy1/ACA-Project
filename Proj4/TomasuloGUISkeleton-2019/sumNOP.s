@@ -48,26 +48,14 @@ LW R8, 0(R6)
 ADD R20, R8, R0
 ADD R21, R7, R0
 NOP
-NOP
-NOP
-NOP
 JAL AddThem
-NOP
-NOP
-NOP
 NOP
 -- move sum from return reg to R7
 ADD R7, R1, R0
 -- increment address (by 4 bytes)
 ADDI R6, R6, 4
 NOP
-NOP
-NOP
-NOP
 J LoopStart
-NOP
-NOP
-NOP
 NOP
 LABEL PostLoop
 -- store answer
@@ -94,15 +82,7 @@ ADDI R30, R30, -4
 LW R31, 0(R30)
 NOP
 -- return from subroutine
-NOP
-NOP
-NOP
-NOP
 JR R31
-NOP
-NOP
-NOP
-NOP
 NOP
 End Assembly
 -- begin main data
