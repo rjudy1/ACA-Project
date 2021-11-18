@@ -9,6 +9,7 @@ public abstract class FunctionalUnit {
   int stationToInsert = 0;
   boolean requestWriteback = false;
   boolean canWriteback = false;
+  boolean inProgress = false;
 
   public boolean getRequestWriteBack() {
       return requestWriteback;
@@ -56,24 +57,32 @@ public abstract class FunctionalUnit {
   public void execCycle(CDB cdb) {
 	  
 	  // flips red robin style
-	  stationToGo = (stationToGo+1)%2;
+//	  stationToGo = (stationToGo+1)%2;
 
   	  if (canWriteback) {		  
           requestWriteback = false;
           stations[stationDone] = null;
   	  }
 
-	  
       //todo - start executing, ask for CDB, etc.
 	  // check station 0 then 1, repeats to allow one to execute
       if (stations[stationToGo] != null && stations[stationToGo].isReady()) {
     	  calculateResult(stationToGo);
     	  stationDone = stationToGo;
+    	  // if done, we can let the other station get checked first next time
+    	  if (!inProgress) {
+    		  stationToGo = (stationToGo+1)%2;
+    	  }
     	  // must add a check of cycles required because can't be done until cycles pass
     	  // put on bus if good
 	  } else if (stations[(stationToGo+1)%2] != null && stations[(stationToGo+1)%2].isReady()) {
 		  calculateResult((stationToGo+1)%2);
 		  stationDone = (stationToGo+1)%2;
+		  // if in progress and we used the second station checked
+		  // we need to check it first next time and keep going
+		  // if it is done, then we would move on anyhow
+		  stationToGo = (stationToGo+1)%2;
+
 	  }
       
   	// check reservationStations for cdb data

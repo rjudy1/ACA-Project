@@ -121,19 +121,14 @@ public class IssueUnit {
 	    	if (issuee.regSrc2Used) {
 	    		issuee.regSrc2Value = simulator.regs.getReg(issuee.regSrc2);
 	    	}
-//	    	else if (inst instanceof ITypeInst || inst.getOpcode() == Instruction.INST_SLL
-//	    			|| inst.getOpcode() == Instruction.INST_SRL || inst.getOpcode() == Instruction.INST_SRA) {
-//	    		issuee.regSrc2Value = issuee.immediate;
-//	    	}
 	    	// true until we check the tags
 			issuee.regSrc1Valid = true;
 			issuee.regSrc2Valid = true;
 	    	
 	    	// We check the BTB, and put prediction if branch, updating PC
 	    	// puts result from predictBranch
-	    	//     if pred taken, incr PC otherwise
+	    	// if pred taken, incr PC otherwise
 	    	if (issuee.isBranch()) {
-//	    		issuee.branch = true;
 	    		simulator.btb.predictBranch(issuee);
 	    	}
 	    	
@@ -143,17 +138,8 @@ public class IssueUnit {
     		simulator.reorder.updateInstForIssue(issuee);
 	
 	        // We then check the CDB, and see if it is broadcasting data we need,
-	        //    so that we can forward during issue
-	      	// special case of checking due to sequential ordering and if ready
-//	      	if (simulator.cdb.getDataTag() == issuee.regSrc1Tag && simulator.cdb.dataValid) {
-//	      		issuee.regSrc1Value = simulator.cdb.getDataValue();
-//	      		issuee.regSrc1Valid = true;
-//	      	}
-//	      	if (simulator.cdb.getDataTag() == issuee.regSrc2Tag && simulator.cdb.dataValid) {
-//	      		issuee.regSrc2Value = simulator.cdb.getDataValue();
-//	      		issuee.regSrc2Valid = true;
-//	      	}
-//	
+	        //    so that we can forward during issue - done during update now
+	
 	        // We then send this to the FU, who stores in reservation station
 	      	// functional unit has to choose the reservation station
 	    	if (!simulator.reorder.isFull()) {
