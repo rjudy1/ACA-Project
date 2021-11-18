@@ -34,7 +34,9 @@ public class ROBEntry {
   int branchTgt = -1; // important for jumps
   
   // for stores
+  int storeAddrReg=-1;
   int storeAddr = -1;
+  int storeAddrTag = -1;
   int storeValueTag = -1;
   int storeValue = -1;
   boolean storeAddrValid = false;
@@ -105,10 +107,12 @@ public class ROBEntry {
     // look through all active instructions in reorder buffer to see if dest is used
     // division of responsibility for snooping to functional unit and rob
     // default storeValueValid as true like the registers
+    storeAddr = inst.regSrc1Value;
+    storeValue = inst.regSrc2Value;
     storeValueValid = true;
+    storeAddrValid = true;
+    storeAddrReg = inst.regSrc1;
  
-    boolean foundTag1 = false;
-    boolean foundTag2 = false;
     int pcUsed1 = inst.pc;
     int pcUsed2 = inst.pc;
     for (int addr = 0; addr < ReorderBuffer.size; addr++) {
@@ -118,10 +122,19 @@ public class ROBEntry {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc1Value = rob.buff[addr].writeValue;
 	    			inst.regSrc1Valid = true;
+	    			storeAddr = rob.buff[addr].writeValue;
+	    			storeAddrValid = true;
+	    		} else if (rob.simulator.cdb.getDataTag() == inst.regSrc1Tag && rob.simulator.cdb.dataValid) {
+		      		inst.regSrc1Value = rob.simulator.cdb.getDataValue();
+		      		inst.regSrc1Valid = true;
+	    			storeAddr = rob.simulator.cdb.getDataValue();
+	    			storeAddrValid = true;
 	    		} else {
 	    			inst.regSrc1Tag = rob.buff[addr].regDestTag; // set the tag
 	    			branchTgtTag = rob.buff[addr].regDestTag; // for JALR, JR
 	    			inst.regSrc1Valid = false;
+	    			storeAddrTag = rob.buff[addr].regDestTag;
+	    			storeAddrValid = false;
 	    		}	    			
     			pcUsed1 = rob.buff[addr].instPC;
 
@@ -132,6 +145,11 @@ public class ROBEntry {
 	    			inst.regSrc2Value = rob.buff[addr].writeValue;
 	    			storeValue = rob.buff[addr].writeValue;
 	    			inst.regSrc2Valid = true;
+	    			storeValueValid = true;
+	    		} else if (rob.simulator.cdb.getDataTag() == inst.regSrc2Tag && rob.simulator.cdb.dataValid) {
+		      		inst.regSrc2Value = rob.simulator.cdb.getDataValue();
+		      		inst.regSrc2Valid = true;
+	    			storeValue = rob.simulator.cdb.getDataValue();
 	    			storeValueValid = true;
 	    		} else {
 	    			inst.regSrc2Tag = rob.buff[addr].regDestTag; // set the tag
@@ -144,6 +162,17 @@ public class ROBEntry {
 	    	}
     	}
     }
+    /*
+     * 	      	if (simulator.cdb.getDataTag() == issuee.regSrc1Tag && simulator.cdb.dataValid) {
+	      		issuee.regSrc1Value = simulator.cdb.getDataValue();
+	      		issuee.regSrc1Valid = true;
+	      	}
+	      	if (simulator.cdb.getDataTag() == issuee.regSrc2Tag && simulator.cdb.dataValid) {
+	      		issuee.regSrc2Value = simulator.cdb.getDataValue();
+	      		issuee.regSrc2Valid = true;
+	      	}
+	
+     */
     
     // allows special exception for tagging store/jalr/jal outputs
     regDestTag = inst.regDestTag;
@@ -163,7 +192,7 @@ public class ROBEntry {
 
     writeReg = inst.regDest;
     opcode = inst.opcode;
-    
+    immediate = inst.immediate;
     writeValue = inst.pc+4;// defaults to this for jal/jalr
 
     // ROB checks the tags and updates if available

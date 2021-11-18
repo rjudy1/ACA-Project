@@ -92,7 +92,9 @@ public class ReorderBuffer {
 	    	break;
 	    case STORE:
 	    	// put in memory if not cleared/voided
-	    	simulator.memory.setIntDataAtAddr(retiree.storeAddr, retiree.storeValue);
+	    	if (retiree.storeAddrReg == 31)
+	    		retiree.storeAddr = simulator.regs.getReg(31);
+	    	simulator.memory.setIntDataAtAddr(retiree.storeAddr + retiree.immediate, retiree.storeValue);
 	    	break;
 	    case HALT:
 	    	halted = true;
@@ -107,7 +109,7 @@ public class ReorderBuffer {
 		case JALR:
 //			if (retiree.resultValid) {
 //				simulator.setPC(retiree.branchTgt);
-				simulator.regs.setReg(31, retiree.instPC);
+				simulator.regs.setReg(31, retiree.instPC+4);
 //			}
 			break;
 	   	default:
@@ -147,14 +149,16 @@ public class ReorderBuffer {
 				  buff[slot].writeValue = buff[slot].branchTgt;
 				  buff[slot].setBranchTaken(simulator.branchUnit.stations[cdb.getDataValue()].isTaken);
 					   // for display
-			  } else if (buff[slot].opcode == IssuedInst.INST_TYPE.STORE && buff[slot].regDestTag == cdb.getDataTag()) { 
-				  buff[slot].storeAddr = cdb.getDataValue();
-				  buff[slot].storeAddrValid = true;
-				  buff[slot].complete = buff[slot].storeValueValid;
-			  } else if (buff[slot].opcode == IssuedInst.INST_TYPE.STORE && buff[slot].storeValueTag == cdb.getDataTag()){
-				  buff[slot].storeValue = cdb.getDataValue();
-				  buff[slot].storeValueValid = true;
-				  buff[slot].complete = buff[slot].storeAddrValid;
+			  } else if (buff[slot].opcode == IssuedInst.INST_TYPE.STORE) {
+				  if (buff[slot].storeAddrTag == cdb.getDataTag()) { 			  
+					  buff[slot].storeAddr = cdb.getDataValue();
+					  buff[slot].storeAddrValid = true;
+				  } else if (buff[slot].storeValueTag == cdb.getDataTag()) {
+					  buff[slot].storeValue = cdb.getDataValue();
+					  buff[slot].storeValueValid = true;
+				  }
+				  buff[slot].complete = buff[slot].storeAddrValid && buff[slot].storeValueValid;
+
 			  } else if (buff[slot].regDestTag == cdb.getDataTag()) {		  
 				  buff[slot].writeValue = cdb.getDataValue();
 				  buff[slot].resultValid = true;

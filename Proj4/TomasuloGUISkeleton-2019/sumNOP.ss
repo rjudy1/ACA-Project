@@ -47,59 +47,39 @@ LABEL LoopStart
 72:  ADD R20, R8, R0
 76:  ADD R21, R7, R0
 80:  NOP
-84:  NOP
+84:  JAL AddThem
 88:  NOP
-92:  NOP
-96:  JAL AddThem
-100:  NOP
-104:  NOP
-108:  NOP
-112:  NOP
       -- move sum from return reg to R7
-116:  ADD R7, R1, R0
+92:  ADD R7, R1, R0
       -- increment address (by 4 bytes)
-120:  ADDI R6, R6, 4
-124:  NOP
-128:  NOP
-132:  NOP
-136:  NOP
-140:  J LoopStart
-144:  NOP
-148:  NOP
-152:  NOP
-156:  NOP
+96:  ADDI R6, R6, 4
+100:  NOP
+104:  J LoopStart
+108:  NOP
 LABEL PostLoop
       -- store answer
-160:  SW R7, -4(R4)
-164:  HALT
+112:  SW R7, -4(R4)
+116:  HALT
       -- subroutine to add 2 numbers
 LABEL AddThem
       -- if doing recursion, must save R31
-168:  SW R31, 0(R30)
+120:  SW R31, 0(R30)
       -- post incr the SP
-172:  ADDI R30, R30, 4
+124:  ADDI R30, R30, 4
       -- Since subroutine uses R5, must save
-176:  SW R5, 0(R30)
-180:  ADDI R30, R30, 4
+128:  SW R5, 0(R30)
+132:  ADDI R30, R30, 4
       -- get nums from parameter regs and sum
-184:  ADD R5, R20, R21
+136:  ADD R5, R20, R21
       -- move result to return reg
-188:  ADD R1, R5, R0
+140:  ADD R1, R5, R0
       -- now put stack back the way it was
       -- and restore return address and R5
-192:  ADDI R30, R30, -4
-196:  LW R5, 0(R30)
-200:  ADDI R30, R30, -4
-204:  LW R31, 0(R30)
-208:  NOP
+144:  ADDI R30, R30, -4
+148:  LW R5, 0(R30)
+152:  ADDI R30, R30, -4
+156:  LW R31, 0(R30)
+160:  NOP
       -- return from subroutine
-212:  NOP
-216:  NOP
-220:  NOP
-224:  NOP
-228:  JR R31
-232:  NOP
-236:  NOP
-240:  NOP
-244:  NOP
-248:  NOP
+164:  JR R31
+168:  NOP

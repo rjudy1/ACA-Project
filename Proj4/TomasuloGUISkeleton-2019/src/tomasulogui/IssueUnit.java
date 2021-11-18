@@ -80,11 +80,14 @@ public class IssueUnit {
 	    		issued = simulator.loader.isReservationStationAvail();
 	    		break;
 	    	case STORE:
-	    		issued = simulator.alu.isReservationStationAvailable();
+	    		issued = true;
 	    		break;
 	    		
 	    	case HALT:    		
 	    	case NOP:
+	    		// duplicate but for debug purposes
+	    		issued = true;
+	    		break;
 	    	case J:
 	    	case JR:
 	    		issued = true;
@@ -142,15 +145,15 @@ public class IssueUnit {
 	        // We then check the CDB, and see if it is broadcasting data we need,
 	        //    so that we can forward during issue
 	      	// special case of checking due to sequential ordering and if ready
-	      	if (simulator.cdb.getDataTag() == issuee.regSrc1Tag && simulator.cdb.dataValid) {
-	      		issuee.regSrc1Value = simulator.cdb.getDataValue();
-	      		issuee.regSrc1Valid = true;
-	      	}
-	      	if (simulator.cdb.getDataTag() == issuee.regSrc2Tag && simulator.cdb.dataValid) {
-	      		issuee.regSrc2Value = simulator.cdb.getDataValue();
-	      		issuee.regSrc2Valid = true;
-	      	}
-	
+//	      	if (simulator.cdb.getDataTag() == issuee.regSrc1Tag && simulator.cdb.dataValid) {
+//	      		issuee.regSrc1Value = simulator.cdb.getDataValue();
+//	      		issuee.regSrc1Valid = true;
+//	      	}
+//	      	if (simulator.cdb.getDataTag() == issuee.regSrc2Tag && simulator.cdb.dataValid) {
+//	      		issuee.regSrc2Value = simulator.cdb.getDataValue();
+//	      		issuee.regSrc2Valid = true;
+//	      	}
+//	
 	        // We then send this to the FU, who stores in reservation station
 	      	// functional unit has to choose the reservation station
 	    	if (!simulator.reorder.isFull()) {
@@ -183,7 +186,7 @@ public class IssueUnit {
 		    		break;
 		    		// I think store is going to have an issue as it should go straight to reorder buffer
 		    	case STORE:
-		    		simulator.alu.acceptIssue(issuee);
+		    		// straight to reorder
 		    		break;
 		    	case BEQ:
 		    	case BNE:
