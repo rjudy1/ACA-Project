@@ -100,17 +100,19 @@ public class ReorderBuffer {
 	    	halted = true;
 	    	break;
 		case J:
+			break;
 		case JR:
 //			if (retiree.resultValid) {
 //			}
+			simulator.squashAllInsts();
 			simulator.setPC(retiree.branchTgt);
 			break;
 		case JAL:
+			simulator.regs.setReg(31, retiree.instPC+4);
+			break;
 		case JALR:
-//			if (retiree.resultValid) {
-//				simulator.setPC(retiree.branchTgt);
-				simulator.regs.setReg(31, retiree.instPC+4);
-//			}
+			simulator.squashAllInsts();
+			simulator.regs.setReg(31, retiree.instPC+4);
 			break;
 	   	default:
 	    }
