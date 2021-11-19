@@ -178,6 +178,7 @@ public class ROBEntry {
     regDestTag = inst.regDestTag;
     regDestUsed = inst.regDestUsed;
 
+    
 //    immediate = inst.immediate;
 
     branch = inst.branch;
@@ -187,7 +188,9 @@ public class ROBEntry {
     		   inst.getOpcode() == IssuedInst.INST_TYPE.JAL ||
     		   inst.getOpcode() == IssuedInst.INST_TYPE.NOP ||
     		   inst.getOpcode() == IssuedInst.INST_TYPE.JR && inst.regSrc1Valid ||
-    		   inst.getOpcode() == IssuedInst.INST_TYPE.JALR && inst.regSrc1Valid;
+    		   inst.getOpcode() == IssuedInst.INST_TYPE.JALR && inst.regSrc1Valid || 
+    		   inst.getOpcode() == IssuedInst.INST_TYPE.STORE && storeValueValid && storeAddrValid ||
+    		   inst.getOpcode() == IssuedInst.INST_TYPE.HALT;
     
 
     writeReg = inst.regDest;

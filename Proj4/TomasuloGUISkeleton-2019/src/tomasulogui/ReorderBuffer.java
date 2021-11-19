@@ -203,10 +203,10 @@ public class ReorderBuffer {
     regs.setSlotForReg(regNum, tag);
   }
 
-  public void squashAll(IssuedInst inst) {
+  public void squashAll() {
 	  for (int addr = 0; addr < ReorderBuffer.size; addr++) {
 		  		buff[addr] = null;
 	  }
-	  frontQ = rearQ;
+	  frontQ = rearQ - 1;
   }
 }
