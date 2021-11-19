@@ -79,6 +79,7 @@ public class IssueUnit {
 	    	case LOAD:
 	    		issued = simulator.loader.isReservationStationAvail();
 	    		break;
+	    		
 	    	case STORE:
 	    		issued = true;
 	    		break;
@@ -142,59 +143,59 @@ public class IssueUnit {
 	
 	        // We then send this to the FU, who stores in reservation station
 	      	// functional unit has to choose the reservation station
-	    	if (!simulator.reorder.isFull()) {
-		    	switch (issuee.getOpcode()) {
-		    	case ADD:
-		    	case ADDI:
-		    	case SUB:
-		    	case AND:
-		    	case ANDI:
-		    	case OR:
-		    	case ORI:
-		    	case XOR:
-		    	case XORI:
-		       	case SLL:
-		    	case SRL:
-		    	case SRA:
-		    		simulator.alu.acceptIssue(issuee);
-		     		break;
-		
-		    	case MUL:
-		    		simulator.multiplier.acceptIssue(issuee);
-		     		break;
-		    		
-		    	case DIV:
-		    		simulator.divider.acceptIssue(issuee);
-		     		break;
-		    		
-		    	case LOAD:
-		    		simulator.loader.acceptIssue(issuee);
-		    		break;
-		    		// I think store is going to have an issue as it should go straight to reorder buffer
-		    	case STORE:
-		    		// straight to reorder
-		    		break;
-		    	case BEQ:
-		    	case BNE:
-		    	case BLTZ:
-		    	case BLEZ:
-		    	case BGEZ:
-		    	case BGTZ:
-		    		simulator.branchUnit.acceptIssue(issuee);
-		    		break;
-		     		// branches fall through to jump because immediate is the same
-		    	case HALT:    		
-		    	case NOP:
-		    	case J:
-		    	case JAL:
-		    		// straight to reorder buffer
-		    		break;
-		    		
-		    	case JR:
-		    	case JALR:
-		    		break;
-		    	}
+//	    	if (!simulator.reorder.isFull()) {
+	    	switch (issuee.getOpcode()) {
+	    	case ADD:
+	    	case ADDI:
+	    	case SUB:
+	    	case AND:
+	    	case ANDI:
+	    	case OR:
+	    	case ORI:
+	    	case XOR:
+	    	case XORI:
+	       	case SLL:
+	    	case SRL:
+	    	case SRA:
+	    		simulator.alu.acceptIssue(issuee);
+	     		break;
+	
+	    	case MUL:
+	    		simulator.multiplier.acceptIssue(issuee);
+	     		break;
+	    		
+	    	case DIV:
+	    		simulator.divider.acceptIssue(issuee);
+	     		break;
+	    		
+	    	case LOAD:
+	    		simulator.loader.acceptIssue(issuee);
+	    		break;
+	    		// I think store is going to have an issue as it should go straight to reorder buffer
+	    	case STORE:
+	    		// straight to reorder
+	    		break;
+	    	case BEQ:
+	    	case BNE:
+	    	case BLTZ:
+	    	case BLEZ:
+	    	case BGEZ:
+	    	case BGTZ:
+	    		simulator.branchUnit.acceptIssue(issuee);
+	    		break;
+	     		// branches fall through to jump because immediate is the same
+	    	case HALT:    		
+	    	case NOP:
+	    	case J:
+	    	case JAL:
+	    		// straight to reorder buffer
+	    		break;
+	    		
+	    	case JR:
+	    	case JALR:
+	    		break;
 	    	}
+//	    	}
 	    	if (!issuee.isBranch())
 	    		simulator.setPC(simulator.getPC() + 4);
     	}

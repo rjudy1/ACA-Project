@@ -4,12 +4,32 @@ public abstract class FunctionalUnit {
   PipelineSimulator simulator;
   ReservationStation[] stations = new ReservationStation[2];
   
+  public int destTag;
+  public int destVal;
+  
   int stationToGo = 0;
   int stationDone = 0;
   int stationToInsert = 0;
   boolean requestWriteback = false;
   boolean canWriteback = false;
   boolean inProgress = false;
+  
+  public int getDestTag() {
+      return destTag;
+  }
+  
+  public void setDestTag(int dTag) {
+  	destTag = dTag;
+  }
+  
+  public int getDestValue() {
+      return destVal;
+  }
+  
+  public void setDestValue(int dVal) {
+  	destVal = dVal;
+  }
+  
 
   public boolean getRequestWriteBack() {
       return requestWriteback;

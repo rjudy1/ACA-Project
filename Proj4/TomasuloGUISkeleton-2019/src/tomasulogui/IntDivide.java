@@ -4,24 +4,6 @@ public class IntDivide extends FunctionalUnit {
 
     public static final int EXEC_CYCLES = 7;
     public int doneFlag = 1;
-    public int destTag;
-    public int destVal;
-    
-    public int getDestTag() {
-        return destTag;
-    }
-    
-    public void setDestTag(int dTag) {
-    	destTag = dTag;
-    }
-    
-    public int getDestValue() {
-        return destVal;
-    }
-    
-    public void setDestValue(int dVal) {
-    	destVal = dVal;
-    }
     
     public IntDivide(PipelineSimulator sim) {
         super(sim);

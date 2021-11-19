@@ -4,27 +4,7 @@ public class IntMult extends FunctionalUnit {
 
     public static final int EXEC_CYCLES = 4;
     public int doneFlag = 1;
-    
-    public int destTag;
-    public int destVal;
-    public int result;
-    
-    public int getDestTag() {
-        return destTag;
-    }
-    
-    public void setDestTag(int dTag) {
-    	destTag = dTag;
-    }
-    
-    public int getDestValue() {
-        return destVal;
-    }
-    
-    public void setDestValue(int dVal) {
-    	destVal = dVal;
-    }
-    
+
     public IntMult(PipelineSimulator sim) {
         super(sim);
     }
@@ -49,11 +29,11 @@ public class IntMult extends FunctionalUnit {
 	        	int operand1 = stations[station].getData1();
 	        	int operand2 = stations[station].getData2();
 	        	destTag = stations[station].getDestTag();
-	        	result = operand1*operand2;
+	        	destVal = operand1*operand2;
 	    		requestWriteback = true;
 	    		doneFlag = 1;
 	    		inProgress = false;
-	    		return result;
+	    		return destVal;
 	    	}
 	    	else {
 	    		inProgress = true;

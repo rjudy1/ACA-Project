@@ -13,25 +13,6 @@ package tomasulogui;
 public class IntAlu extends FunctionalUnit{
   public static final int EXEC_CYCLES = 1;
   
-  public int destVal;
-  public int destTag;
-  
-  public int getDestTag() {
-      return destTag;
-  }
-  
-  public void setDestTag(int dTag) {
-  	destTag = dTag;
-  }
-  
-  public int getDestValue() {
-      return destVal;
-  }
-  
-  public void setDestValue(int dVal) {
-  	destVal = dVal;
-  }
-  
   public void squashAll() {
   	for (int i = 0; i < 2; i++) {
   		stations[i] = null;

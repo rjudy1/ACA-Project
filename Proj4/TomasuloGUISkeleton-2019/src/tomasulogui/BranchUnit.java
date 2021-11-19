@@ -4,27 +4,9 @@ public class BranchUnit
         extends FunctionalUnit {
 
     public static final int EXEC_CYCLES = 1;
-    int destTag;
-    int destVal;
 
     public BranchUnit(PipelineSimulator sim) {
         super(sim);
-    }
-    
-    public int getDestTag() {
-        return destTag;
-    }
-    
-    public void setDestTag(int dTag) {
-    	destTag = dTag;
-    }
-    
-    public int getDestValue() {
-        return destVal;
-    }
-    
-    public void setDestValue(int dVal) {
-    	destVal = dVal;
     }
 
     public int calculateResult(int station) {
