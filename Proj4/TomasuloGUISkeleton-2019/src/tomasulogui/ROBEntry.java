@@ -113,8 +113,8 @@ public class ROBEntry {
     storeAddrValid = true;
     storeAddrReg = inst.regSrc1;
  
-    int pcUsed1 = 0;
-    int pcUsed2 = 0;
+    int pcUsed1 = -1;
+    int pcUsed2 = -1;
     for (int addr = 0; addr < ReorderBuffer.size; addr++) {
     	if (rob.buff[addr] != null) {
 	    	if (rob.buff[addr].writeReg == inst.regSrc1 && rob.buff[addr].instPC > pcUsed1
