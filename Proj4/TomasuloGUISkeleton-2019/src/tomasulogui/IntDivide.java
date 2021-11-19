@@ -40,9 +40,11 @@ public class IntDivide extends FunctionalUnit {
 	        	destTag = stations[station].getDestTag();
  	    		requestWriteback = true;
  	    		doneFlag = 1;
+ 	    		inProgress = false;
  	    		return destVal;
  	    	}
  	    	else {
+ 	    		inProgress = true;
  	    		doneFlag += 1;
  	    	}
          }

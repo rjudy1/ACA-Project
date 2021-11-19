@@ -52,9 +52,11 @@ public class IntMult extends FunctionalUnit {
 	        	result = operand1*operand2;
 	    		requestWriteback = true;
 	    		doneFlag = 1;
+	    		inProgress = false;
 	    		return result;
 	    	}
 	    	else {
+	    		inProgress = true;
 	    		doneFlag += 1;
 	    	}
         }
