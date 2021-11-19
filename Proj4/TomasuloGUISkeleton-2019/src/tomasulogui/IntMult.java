@@ -39,6 +39,7 @@ public class IntMult extends FunctionalUnit {
 	    		inProgress = true;
 	    		doneFlag += 1;
 	    	}
+	    	stationDone = station;
         }
         
         return -1;

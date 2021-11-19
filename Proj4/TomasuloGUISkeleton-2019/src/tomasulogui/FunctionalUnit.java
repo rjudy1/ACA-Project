@@ -88,7 +88,7 @@ public abstract class FunctionalUnit {
 	  // check station 0 then 1, repeats to allow one to execute
       if (stations[stationToGo] != null && stations[stationToGo].isReady()) {
     	  calculateResult(stationToGo);
-    	  stationDone = stationToGo;
+//    	  stationDone = stationToGo;
     	  // if done, we can let the other station get checked first next time
     	  if (!inProgress) {
     		  stationToGo = (stationToGo+1)%2;
@@ -97,7 +97,7 @@ public abstract class FunctionalUnit {
     	  // put on bus if good
 	  } else if (stations[(stationToGo+1)%2] != null && stations[(stationToGo+1)%2].isReady()) {
 		  calculateResult((stationToGo+1)%2);
-		  stationDone = (stationToGo+1)%2;
+//		  stationDone = (stationToGo+1)%2;
 		  // if in progress and we used the second station checked
 		  // we need to check it first next time and keep going
 		  // if it is done, then we would move on anyhow

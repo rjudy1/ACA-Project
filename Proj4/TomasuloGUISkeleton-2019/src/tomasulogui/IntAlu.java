@@ -78,6 +78,7 @@ public class IntAlu extends FunctionalUnit{
     	}    
     	requestWriteback = true;
     	destTag = stations[station].getDestTag();
+    	stationDone = station;
     }
 
 	return destVal;

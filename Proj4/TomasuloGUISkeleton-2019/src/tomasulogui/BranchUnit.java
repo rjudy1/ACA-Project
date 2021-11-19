@@ -49,7 +49,9 @@ public class BranchUnit
        		requestWriteback = true;
 	       	destTag = -2;// use as a special flag to indicate a branch target just resolved
 	       	destVal = station; // set target
+	       	stationDone = station;
        }
+    	
        
        return destVal;
     }
