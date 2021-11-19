@@ -113,12 +113,12 @@ public class ROBEntry {
     storeAddrValid = true;
     storeAddrReg = inst.regSrc1;
  
-    int pcUsed1 = inst.pc;
-    int pcUsed2 = inst.pc;
+    int pcUsed1 = 0;
+    int pcUsed2 = 0;
     for (int addr = 0; addr < ReorderBuffer.size; addr++) {
     	if (rob.buff[addr] != null) {
-	    	if (rob.buff[addr].writeReg == inst.regSrc1 && rob.buff[addr].instPC < pcUsed1
-	    			&& inst.regSrc1Used) {
+	    	if (rob.buff[addr].writeReg == inst.regSrc1 && rob.buff[addr].instPC > pcUsed1
+	    			&& rob.buff[addr].instPC < inst.pc	&& inst.regSrc1Used) {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc1Value = rob.buff[addr].writeValue;
 	    			inst.regSrc1Valid = true;
@@ -139,8 +139,8 @@ public class ROBEntry {
     			pcUsed1 = rob.buff[addr].instPC;
 
 	    	}
-	    	if (rob.buff[addr].writeReg == inst.regSrc2  && rob.buff[addr].instPC < pcUsed2
-	    			&& inst.regSrc2Used) {
+	    	if (rob.buff[addr].writeReg == inst.regSrc2 && rob.buff[addr].instPC > pcUsed2
+	    			&& rob.buff[addr].instPC < inst.pc && inst.regSrc2Used) {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc2Value = rob.buff[addr].writeValue;
 	    			storeValue = rob.buff[addr].writeValue;
