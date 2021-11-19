@@ -104,21 +104,21 @@ public class ReorderBuffer {
 		case JR:
 //			if (retiree.resultValid) {
 //			}
-			simulator.squashAllInsts();
 			simulator.setPC(retiree.branchTgt);
+			simulator.squashAllInsts();
 			break;
 		case JAL:
 			simulator.regs.setReg(31, retiree.instPC+4);
 			break;
 		case JALR:
-			simulator.squashAllInsts();
 			simulator.regs.setReg(31, retiree.instPC+4);
+			simulator.squashAllInsts();
 			break;
 	   	default:
 	    }
 	    
 	    
-    	shouldAdvance = retiree.isComplete() && !retiree.mispredicted;
+    	shouldAdvance = retiree != null && retiree.isComplete() && !retiree.mispredicted;
 	   
     	// if mispredict branch, won't do normal advance
 	    if (shouldAdvance) {
@@ -203,4 +203,10 @@ public class ReorderBuffer {
     regs.setSlotForReg(regNum, tag);
   }
 
+  public void squashAll(IssuedInst inst) {
+	  for (int addr = 0; addr < ReorderBuffer.size; addr++) {
+		  		buff[addr] = null;
+	  }
+	  frontQ = rearQ;
+  }
 }
