@@ -87,7 +87,7 @@ public class ReorderBuffer {
 	    	if (retiree.mispredicted) {
 				simulator.setPC(retiree.branchTgt);
 				simulator.squashAllInsts();
-				shouldAdvance = false;
+//				shouldAdvance = false;
 	    	}
 	    	break;
 	    case STORE:
@@ -118,7 +118,7 @@ public class ReorderBuffer {
 	    }
 	    
 	    
-    	shouldAdvance = retiree != null && retiree.isComplete() && !retiree.mispredicted;
+    	shouldAdvance = retiree.isComplete();
 	   
     	// if mispredict branch, won't do normal advance
 	    if (shouldAdvance) {
