@@ -123,6 +123,9 @@ public class ReorderBuffer {
     	// if mispredict branch, won't do normal advance
 	    if (shouldAdvance) {
 	       numRetirees++;
+	       if (frontQ == -1) {
+	    	   int test = 0;
+	       }
 	       buff[frontQ] = null;
 	       frontQ = (frontQ + 1) % size;
 	    }
@@ -207,6 +210,6 @@ public class ReorderBuffer {
 	  for (int addr = 0; addr < ReorderBuffer.size; addr++) {
 		  		buff[addr] = null;
 	  }
-	  frontQ = rearQ - 1;
+	  frontQ = (rearQ - 1 + 30) % size;
   }
 }
