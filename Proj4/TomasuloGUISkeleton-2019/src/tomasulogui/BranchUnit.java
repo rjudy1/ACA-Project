@@ -61,6 +61,7 @@ public class BranchUnit
 	       		stations[station].address += stations[station].immediate;
 
        		requestWriteback = true;
+       		// special flags which station the value belongs to and that it is a branch
 	       	destTag = -2;// use as a special flag to indicate a branch target just resolved
 	       	destVal = station; // set target
 	       	stationDone = station;

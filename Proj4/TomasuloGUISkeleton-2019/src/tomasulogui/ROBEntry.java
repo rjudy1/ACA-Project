@@ -2,7 +2,6 @@
  * authors: Aaron Johnston and Rachael Judy
  * file: ROBEntry.java
  * purpose: fill in the tag fields and modify instruction
- * changes:
  *  	
  *  	
  */
@@ -17,10 +16,11 @@ public class ROBEntry {
   boolean complete = false;
   boolean predictTaken = false;
   boolean mispredicted = false;
+  
+  // needed in the 
   int instPC = -1;
   int writeReg = -1;
-  int writeValue = -1;  
-  boolean resultValid = false;
+  int writeValue = -1;
   
   int regDestTag = -1;
   boolean regDestUsed = false;
@@ -113,8 +113,6 @@ public class ROBEntry {
     storeAddrValid = true;
     storeAddrReg = inst.regSrc1;
     branchTgt = inst.regSrc1Value;
-	inst.regSrc1Valid = true;
-	inst.regSrc2Valid = true;
  
     int pcUsed1 = -1;
     int pcUsed2 = -1;

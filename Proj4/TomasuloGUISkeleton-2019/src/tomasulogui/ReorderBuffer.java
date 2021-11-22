@@ -140,7 +140,6 @@ public class ReorderBuffer {
 				  buff[slot].branchTgt = cdb.getDataValue();
 				  buff[slot].writeValue = cdb.getDataValue(); // for display purposes
 				  buff[slot].complete = true;
-				  buff[slot].resultValid = true;
 			  } else if ((buff[slot].opcode == IssuedInst.INST_TYPE.BEQ || buff[slot].opcode == IssuedInst.INST_TYPE.BNE
 					  || buff[slot].opcode == IssuedInst.INST_TYPE.BLTZ || buff[slot].opcode == IssuedInst.INST_TYPE.BLEZ
 					  || buff[slot].opcode == IssuedInst.INST_TYPE.BGTZ || buff[slot].opcode == IssuedInst.INST_TYPE.BGEZ)
@@ -164,7 +163,6 @@ public class ReorderBuffer {
 
 			  } else if (buff[slot].regDestTag == cdb.getDataTag()) {		  
 				  buff[slot].writeValue = cdb.getDataValue();
-				  buff[slot].resultValid = true;
 				  buff[slot].complete = true;
 			  }
 		  }

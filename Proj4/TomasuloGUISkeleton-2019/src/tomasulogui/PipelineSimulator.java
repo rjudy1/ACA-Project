@@ -1,3 +1,12 @@
+/*
+ * File: 	PipelineSimulator.java
+ * Authors: Aaron Johnston and Rachael Judy
+ * purpose: Overall simulation of the tomasulo, checks cdb and calls
+ * 			units and issue
+ * changes: make the cdb go through and check who wants on
+ * 
+ */
+
 package tomasulogui;
 
 import java.io.*;
