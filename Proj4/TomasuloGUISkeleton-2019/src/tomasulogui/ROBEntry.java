@@ -113,6 +113,8 @@ public class ROBEntry {
     storeAddrValid = true;
     storeAddrReg = inst.regSrc1;
     branchTgt = inst.regSrc1Value;
+	inst.regSrc1Valid = true;
+	inst.regSrc2Valid = true;
  
     int pcUsed1 = -1;
     int pcUsed2 = -1;

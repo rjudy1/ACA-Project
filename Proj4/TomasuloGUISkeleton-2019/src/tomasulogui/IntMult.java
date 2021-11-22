@@ -1,3 +1,11 @@
+/*
+ * authors: Aaron Johnston and Rachael Judy
+ * file: IntMultiply.java
+ * purpose: once operands ready, hold the unit with the in progress flag
+ * 				and calculate result after appropriate delay
+ *  	
+ */
+
 package tomasulogui;
 
 public class IntMult extends FunctionalUnit {
@@ -21,9 +29,7 @@ public class IntMult extends FunctionalUnit {
     }
 
     public int calculateResult(int station) {        
-//        if (canWriteback) {
-//            requestWriteback = false;
-//        }
+    	// wait for cycles to finish and then do the calculation on last
         if (!requestWriteback) {
 	    	if (doneFlag == getExecCycles()) {
 	        	int operand1 = stations[station].getData1();
@@ -42,8 +48,6 @@ public class IntMult extends FunctionalUnit {
 	    	stationDone = station;
         }
         
-        return -1;
+        return destVal;
     }
-
-    
 }
