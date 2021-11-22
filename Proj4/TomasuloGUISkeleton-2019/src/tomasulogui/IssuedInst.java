@@ -1,8 +1,7 @@
 /*
  * File:    IssuedInst.java
  * Authors: Aaron Johnston and Rachael Judy
- * Project: ACA Project 4 - Tomasulo
- * Notes:   
+ * purpose: This defines an issued instruction for tomasulo
  * 
  */
 

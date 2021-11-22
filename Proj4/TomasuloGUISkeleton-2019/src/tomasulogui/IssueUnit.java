@@ -1,9 +1,9 @@
 /*
  * File: 	IssueUnit.java
  * Authors: Aaron Johnston and Rachael Judy
- * Project: ACA Project 4 - Tomasulo
- * Notes:   
- * 
+ * purpose: This file issues an instruction. The first step is to ensure that a reservation station is available
+ * 			from here, we issue the instruction and send it to the ROB, who checks and creates tags as necessary
+ * 			After this, it is sent to its specific FU.
  * 
  */
 
@@ -24,33 +24,22 @@ public class IssueUnit {
     }
 
     public void execCycle() {
-      // an execution cycle involves:
-      // 1. checking if ROB and Reservation Station avail
-      // 2. issuing to reservation station, if no structural hazard
-    	// put issued instruction in reservation station and tag with number and registers as necssary
+    	// an execution cycle involves:
+    	// 1. checking if ROB and Reservation Station avail
+    	// 2. issuing to reservation station, if no structural hazard
+    	// put issued instruction in reservation station and tag with number and registers as necessary
 
     	// to issue, we make an IssuedInst, filling in what we know
-    	// fetch
     	Instruction inst = simulator.memory.getInstAtAddr(simulator.getPC());
     	issuee = IssuedInst.createIssuedInst(inst);
     	issuee.pc = simulator.getPC();
     	
     	// set flag to indicate is a branch
-    	if (issuee.getOpcode() == IssuedInst.INST_TYPE.J ||
-	    		issuee.getOpcode() == IssuedInst.INST_TYPE.JAL ||
-	    		issuee.getOpcode() == IssuedInst.INST_TYPE.JALR ||
-	    		issuee.getOpcode() == IssuedInst.INST_TYPE.JR ||
-	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BEQ ||
-	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BGEZ ||
-	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BGTZ ||
-	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BLEZ ||
-	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BLTZ ||
-	    		issuee.getOpcode() == IssuedInst.INST_TYPE.BNE) {
+    	if (issuee.determineIfBranch()) {
     		issuee.setBranch();
     	}
-    	// check if can issue/is station available
-    	int stationNumber = -1;
     	issued = false;
+    	// Needs to make sure the reorder buffer has space for it
     	if (!simulator.reorder.isFull()) {
 	    	switch (issuee.getOpcode()) {
 	    	case ADD:
@@ -79,31 +68,20 @@ public class IssueUnit {
 	    	case LOAD:
 	    		issued = simulator.loader.isReservationStationAvail();
 	    		break;
-	    		
 	    	case STORE:
-	    		issued = true;
-	    		break;
-	    		
 	    	case HALT:    		
 	    	case NOP:
-	    		// duplicate but for debug purposes
-	    		issued = true;
-	    		break;
 	    	case J:
 	    	case JR:
 	    		issued = true;
 	    		break;
-
 	    	case JAL:
-	    		issuee.regDest = 31;
-	    		issued = true;
-	    		break;
 	    	case JALR:
 	    		// straight to reorder buffer
-	    		issuee.regDest = 31;
+	    		// We used 31 so that it is able to catch during forwarding
+	    		issuee.regDest = 31; 
 	    		issued = true;
 	    		break;
-	    	
 	    	case BEQ:
 	    	case BNE:
 	    	case BLTZ:
@@ -122,10 +100,7 @@ public class IssueUnit {
 	    	if (issuee.regSrc2Used) {
 	    		issuee.regSrc2Value = simulator.regs.getReg(issuee.regSrc2);
 	    	}
-	    	// true until we check the tags
-			issuee.regSrc1Valid = true;
-			issuee.regSrc2Valid = true;
-	    	
+
 	    	// We check the BTB, and put prediction if branch, updating PC
 	    	// puts result from predictBranch
 	    	// if pred taken, incr PC otherwise
@@ -143,7 +118,6 @@ public class IssueUnit {
 	
 	        // We then send this to the FU, who stores in reservation station
 	      	// functional unit has to choose the reservation station
-//	    	if (!simulator.reorder.isFull()) {
 	    	switch (issuee.getOpcode()) {
 	    	case ADD:
 	    	case ADDI:
@@ -159,19 +133,15 @@ public class IssueUnit {
 	    	case SRA:
 	    		simulator.alu.acceptIssue(issuee);
 	     		break;
-	
 	    	case MUL:
 	    		simulator.multiplier.acceptIssue(issuee);
-	     		break;
-	    		
+	     		break;		
 	    	case DIV:
 	    		simulator.divider.acceptIssue(issuee);
 	     		break;
-	    		
 	    	case LOAD:
 	    		simulator.loader.acceptIssue(issuee);
 	    		break;
-	    		// I think store is going to have an issue as it should go straight to reorder buffer
 	    	case STORE:
 	    		// straight to reorder
 	    		break;
@@ -190,12 +160,10 @@ public class IssueUnit {
 	    	case JAL:
 	    		// straight to reorder buffer
 	    		break;
-	    		
 	    	case JR:
 	    	case JALR:
 	    		break;
 	    	}
-//	    	}
 	    	if (!issuee.isBranch())
 	    		simulator.setPC(simulator.getPC() + 4);
     	}

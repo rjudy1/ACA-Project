@@ -1,3 +1,12 @@
+/*
+ * authors: Aaron Johnston and Rachael Judy
+ * file: ROBEntry.java
+ * purpose: This is an abstract class for different functional units (intAlu, intDivide Ect).
+ * 			It has the ability to check reservation station ability, as well as squash all reservation stations.
+ * 			the exec cycle ensures the station is ready and then calculates the result through the individial FU's
+ * 
+ */
+
 package tomasulogui;
 
 public abstract class FunctionalUnit {
@@ -76,33 +85,21 @@ public abstract class FunctionalUnit {
 
   public void execCycle(CDB cdb) {
 	  
-	  // flips red robin style
-//	  stationToGo = (stationToGo+1)%2;
-
   	  if (canWriteback) {		  
           requestWriteback = false;
           stations[stationDone] = null;
   	  }
 
-      //todo - start executing, ask for CDB, etc.
-	  // check station 0 then 1, repeats to allow one to execute
+  	  // check station 0 then 1, repeats to allow one to execute, round robin style
       if (stations[stationToGo] != null && stations[stationToGo].isReady()) {
     	  calculateResult(stationToGo);
-//    	  stationDone = stationToGo;
     	  // if done, we can let the other station get checked first next time
     	  if (!inProgress) {
     		  stationToGo = (stationToGo+1)%2;
     	  }
-    	  // must add a check of cycles required because can't be done until cycles pass
-    	  // put on bus if good
 	  } else if (stations[(stationToGo+1)%2] != null && stations[(stationToGo+1)%2].isReady()) {
 		  calculateResult((stationToGo+1)%2);
-//		  stationDone = (stationToGo+1)%2;
-		  // if in progress and we used the second station checked
-		  // we need to check it first next time and keep going
-		  // if it is done, then we would move on anyhow
 		  stationToGo = (stationToGo+1)%2;
-
 	  }
       
   	// check reservationStations for cdb data
@@ -117,7 +114,6 @@ public abstract class FunctionalUnit {
   }
 
   public void acceptIssue(IssuedInst inst) {
-  // todo - fill in reservation station (if available) with data from inst
 	  stations[stationToInsert] = new ReservationStation(simulator);
 	  stations[stationToInsert].loadInst(inst);
 	  return;
