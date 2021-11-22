@@ -130,12 +130,15 @@ public class ReorderBuffer {
   public void readCDB(CDB cdb) {
 	  for (int slot = 0; slot < size; slot++) { 
 		  if (buff[slot] != null && cdb.getDataValid()) { 			  
+			  // if JR or JALR and the target tag matches, then take it and mark complete
 			  if (buff[slot].branchTgtTag == cdb.getDataTag() 
 					  && (buff[slot].opcode == IssuedInst.INST_TYPE.JR
 					  || buff[slot].opcode == IssuedInst.INST_TYPE.JALR)) {
 				  buff[slot].branchTgt = cdb.getDataValue();
 				  buff[slot].writeValue = cdb.getDataValue(); // for display purposes
 				  buff[slot].complete = true;
+
+			  // if branch type then do the back door and get target and result from branch unit
 			  } else if ((buff[slot].opcode == IssuedInst.INST_TYPE.BEQ || buff[slot].opcode == IssuedInst.INST_TYPE.BNE
 					  || buff[slot].opcode == IssuedInst.INST_TYPE.BLTZ || buff[slot].opcode == IssuedInst.INST_TYPE.BLEZ
 					  || buff[slot].opcode == IssuedInst.INST_TYPE.BGTZ || buff[slot].opcode == IssuedInst.INST_TYPE.BGEZ)
@@ -143,9 +146,13 @@ public class ReorderBuffer {
 						  && simulator.branchUnit.stations[cdb.getDataValue()].pc == buff[slot].instPC) {
 				  // shorting from branch unit
 				  buff[slot].branchTgt = simulator.branchUnit.stations[cdb.getDataValue()].address;
-				  buff[slot].complete = true;
 				  buff[slot].writeValue = buff[slot].branchTgt;
+				  
+				  // decide if mispredict
 				  buff[slot].setBranchTaken(simulator.branchUnit.stations[cdb.getDataValue()].isTaken);
+				  buff[slot].complete = true;
+
+			  // if store, might be waiting for address or for storeValue so wait for both to mark complete
 			  } else if (buff[slot].opcode == IssuedInst.INST_TYPE.STORE) {
 				  if (buff[slot].storeAddrTag == cdb.getDataTag()) { 			  
 					  buff[slot].storeAddr = cdb.getDataValue();
@@ -155,6 +162,8 @@ public class ReorderBuffer {
 					  buff[slot].storeValueValid = true;
 				  }
 				  buff[slot].complete = buff[slot].storeAddrValid && buff[slot].storeValueValid;
+
+			  // basic match anytime the regDest matches tag
 			  } else if (buff[slot].regDestTag == cdb.getDataTag()) {		  
 				  buff[slot].writeValue = cdb.getDataValue();
 				  buff[slot].complete = true;

@@ -17,7 +17,6 @@ public class IssueUnit {
     IssuedInst issuee;
     boolean issued;
     Object fu;
-    boolean lock;
 
     public IssueUnit(PipelineSimulator sim) {
       simulator = sim;
