@@ -41,6 +41,7 @@ public class BranchUnit
 	       	}
 	       	
 	       	simulator.btb.setBranchResult(stations[station].pc, stations[station].isTaken);
+//	       	simulator.getROB().buff[stations[station].destTag].setBranchTaken(stations[station].isTaken);
 	       	
        		stations[station].address = stations[station].pc + 4;
 	       	if (stations[station].isTaken)

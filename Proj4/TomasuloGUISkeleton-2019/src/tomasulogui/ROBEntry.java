@@ -29,7 +29,6 @@ public class ROBEntry {
   int immediate = -1;
 
   boolean branch = false;
-  boolean branchPrediction = false;
   int branchTgtTag = -1;
   int branchTgt = -1; // important for jumps
   
@@ -77,6 +76,7 @@ public class ROBEntry {
   // TODO - maybe more than simple set
 	  // if mispredicted, in reorder buffer, 
 	  // will reset pc to appropriate value and flush all
+//	  mispredicted = result != predictTaken;
 	  if (result != predictTaken) {
 		  mispredicted = true;
 	  }
@@ -112,6 +112,7 @@ public class ROBEntry {
     storeValueValid = true;
     storeAddrValid = true;
     storeAddrReg = inst.regSrc1;
+    branchTgt = inst.regSrc1Value;
  
     int pcUsed1 = -1;
     int pcUsed2 = -1;
@@ -122,11 +123,14 @@ public class ROBEntry {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc1Value = rob.buff[addr].writeValue;
 	    			inst.regSrc1Valid = true;
+		      		branchTgt = rob.buff[addr].writeValue;
+
 	    			storeAddr = rob.buff[addr].writeValue;
 	    			storeAddrValid = true;
 	    		} else if (rob.simulator.cdb.getDataTag() == inst.regSrc1Tag && rob.simulator.cdb.dataValid) {
 		      		inst.regSrc1Value = rob.simulator.cdb.getDataValue();
 		      		inst.regSrc1Valid = true;
+		      		branchTgt = rob.simulator.cdb.getDataValue();
 	    			storeAddr = rob.simulator.cdb.getDataValue();
 	    			storeAddrValid = true;
 	    		} else {
