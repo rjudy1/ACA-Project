@@ -1,5 +1,10 @@
-// I think we're using the resultValid flag incorrectly
-
+/*
+ * File: 	ReorderBuffer.java
+ * Authors: Aaron Johnston and Rachael Judy
+ * purpose: Reorder Buffer has three main functions. The first is being able to retire a function. That writes back values
+ * 			 and removes them from the ROB. We also wrote a complicated readCDB function. Much of the logic here has to do with branches
+ * 			and stores. UpdateInstForIssue's main purpose is to copy the inst data into the ROB
+ */
 
 package tomasulogui;
 
@@ -51,11 +56,6 @@ public class ReorderBuffer {
       return true;
     }
     boolean shouldAdvance = true;
-
-    // TODO - this is where you look at the type of instruction and
-    // figure out how to retire it properly
-    // case statement
-
     
     if (retiree.opcode != null && retiree.isComplete() || retiree.opcode == IssuedInst.INST_TYPE.NOP) {
 	    switch ((IssuedInst.INST_TYPE)retiree.opcode) {
@@ -87,11 +87,10 @@ public class ReorderBuffer {
 	    	if (retiree.mispredicted) {
 				simulator.setPC(retiree.branchTgt);
 				simulator.squashAllInsts();
-//				shouldAdvance = false;
 	    	}
 	    	break;
 	    case STORE:
-	    	// put in memory if not cleared/voided
+	    	// Special exception because its never put on CDB
 	    	if (retiree.storeAddrReg == 31)
 	    		retiree.storeAddr = simulator.regs.getReg(31);
 	    	simulator.memory.setIntDataAtAddr(retiree.storeAddr + retiree.immediate, retiree.storeValue);
@@ -102,8 +101,6 @@ public class ReorderBuffer {
 		case J:
 			break;
 		case JR:
-//			if (retiree.resultValid) {
-//			}
 			simulator.setPC(retiree.branchTgt);
 			simulator.squashAllInsts();
 			break;
@@ -116,7 +113,6 @@ public class ReorderBuffer {
 			break;
 	   	default:
 	    }
-	    
 	    
     	shouldAdvance = retiree.isComplete();
 	   
@@ -132,7 +128,7 @@ public class ReorderBuffer {
   }
 
   public void readCDB(CDB cdb) {
-	  for (int slot = 0; slot < size; slot++) { // stat = station num
+	  for (int slot = 0; slot < size; slot++) { 
 		  if (buff[slot] != null && cdb.getDataValid()) { 			  
 			  if (buff[slot].branchTgtTag == cdb.getDataTag() 
 					  && (buff[slot].opcode == IssuedInst.INST_TYPE.JR
@@ -151,7 +147,6 @@ public class ReorderBuffer {
 				  buff[slot].complete = true;
 				  buff[slot].writeValue = buff[slot].branchTgt;
 				  buff[slot].setBranchTaken(simulator.branchUnit.stations[cdb.getDataValue()].isTaken);
-					   // for display
 			  } else if (buff[slot].opcode == IssuedInst.INST_TYPE.STORE) {
 				  if (buff[slot].storeAddrTag == cdb.getDataTag()) { 			  
 					  buff[slot].storeAddr = cdb.getDataValue();
@@ -161,7 +156,6 @@ public class ReorderBuffer {
 					  buff[slot].storeValueValid = true;
 				  }
 				  buff[slot].complete = buff[slot].storeAddrValid && buff[slot].storeValueValid;
-
 			  } else if (buff[slot].regDestTag == cdb.getDataTag()) {		  
 				  buff[slot].writeValue = cdb.getDataValue();
 				  buff[slot].resultValid = true;
