@@ -70,11 +70,12 @@ public class ReservationStation {
 			  && simulator.cdb.getDataValid()) {
 		  data2 = simulator.cdb.getDataValue();
 		  data2Valid = true;
-	  } else if (simulator.cdb.getDataTag() == addressTag
-			  && simulator.cdb.getDataValid()) {
-		  address = simulator.cdb.getDataValue();
-		  addressValid = true;
-	  } // else if dest tag and branch?
+	  } 
+//	  else if (simulator.cdb.getDataTag() == addressTag
+//			  && simulator.cdb.getDataValid()) {
+//		  address = simulator.cdb.getDataValue();
+//		  addressValid = true;
+//	  } // else if dest tag and branch?
 	  // etc, might need to check if branch
 	  
   }

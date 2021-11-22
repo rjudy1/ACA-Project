@@ -25,10 +25,10 @@ public class BranchUnit
 	       		stations[station].isTaken = operand1 != operand2;
 	       		break;
 	       	case BLEZ:
-	       		stations[station].isTaken = operand1 < 0;
+	       		stations[station].isTaken = operand1 <= 0;
 	       		break;
 	       	case BLTZ:
-	       		stations[station].isTaken = operand1 <= 0;
+	       		stations[station].isTaken = operand1 < 0;
 	       		break;
 	       	case BGEZ:
 	       		stations[station].isTaken = operand1 >= 0;
