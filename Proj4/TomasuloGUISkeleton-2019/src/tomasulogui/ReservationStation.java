@@ -1,8 +1,8 @@
 /*
  * File: ReservationStation.java
  * Authors: Aaron Johnston and Rachael Judy
- * Project: ACA Project 4 - Tomasulo
- * Notes:   added snoop functionality, worked on populating from IssuedInst
+ * Notes:   We added the ability for the reservation station to snoop on the CDB. We also added
+ * 			the loadInst function so that the Functional Units can load instructions into the reservation stations
  * 
  * 
  */
@@ -20,14 +20,10 @@ public class ReservationStation {
   boolean data2Valid = false;
   // destTag doubles as branch tag
   int destTag;
-  int destReg; //??
   IssuedInst.INST_TYPE function = IssuedInst.INST_TYPE.NOP;
 
   // following just for branches
-  int addressTag;
-  boolean addressValid = false;
   int address;
-  boolean predictedTaken = false;
   
   boolean isTaken;
   int pc;
@@ -51,17 +47,13 @@ public class ReservationStation {
     return data2;
   }
 
-  public boolean isPredictedTaken() {
-    return predictedTaken;
-  }
+
 
   public IssuedInst.INST_TYPE getFunction() {
     return function;
   }
 
   public void snoop(CDB cdb) {
-    // TODO - add code to snoop on CDB each cycle
-	  // might need to block snoop when data in instruction invalid
 	  if ((simulator.cdb.getDataTag() == tag1) 
 			  && simulator.cdb.getDataValid()) {
 		  data1 = simulator.cdb.getDataValue();
@@ -71,13 +63,7 @@ public class ReservationStation {
 		  data2 = simulator.cdb.getDataValue();
 		  data2Valid = true;
 	  } 
-//	  else if (simulator.cdb.getDataTag() == addressTag
-//			  && simulator.cdb.getDataValid()) {
-//		  address = simulator.cdb.getDataValue();
-//		  addressValid = true;
-//	  } // else if dest tag and branch?
-	  // etc, might need to check if branch
-	  
+
   }
 
   public boolean isReady() {
@@ -85,9 +71,7 @@ public class ReservationStation {
   }
 
   public void loadInst(IssuedInst inst) {
-    // TODO add code to insert inst into reservation station
 	  destTag = inst.regDestTag;
-	  destReg = inst.regDest; //?
 	  
 	  tag1 = inst.regSrc1Tag;
 	  data1 = inst.regSrc1Value;
@@ -101,10 +85,8 @@ public class ReservationStation {
 	  pc = inst.pc;
 	  immediate = inst.immediate;
 	  
-	  // branch setup??
 	  if (inst.branch) {
-		  predictedTaken = inst.branchPrediction;
-		  address = inst.branchTgt;
+ 		  address = inst.branchTgt;
 	  }
 	  
   }
