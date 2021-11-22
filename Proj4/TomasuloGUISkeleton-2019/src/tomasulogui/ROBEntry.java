@@ -17,15 +17,14 @@ public class ROBEntry {
   boolean predictTaken = false;
   boolean mispredicted = false;
   
-  // needed in the 
+  // needed in the branch retrieval and snooping
   int instPC = -1;
   int writeReg = -1;
   int writeValue = -1;
   
   int regDestTag = -1;
-  boolean regDestUsed = false;
 
-  // might need need
+  // needed in branch unit
   int immediate = -1;
 
   boolean branch = false;
@@ -107,31 +106,37 @@ public class ROBEntry {
     // look through all active instructions in reorder buffer to see if dest is used
     // division of responsibility for snooping to functional unit and rob
     // default storeValueValid as true like the registers
-    storeAddr = inst.regSrc1Value;
+    // store the defaults
+    storeAddr = inst.regSrc1Value; 
+    storeAddrValid = true;
     storeValue = inst.regSrc2Value;
     storeValueValid = true;
-    storeAddrValid = true;
     storeAddrReg = inst.regSrc1;
     branchTgt = inst.regSrc1Value;
  
-    int pcUsed1 = -1;
-    int pcUsed2 = -1;
     for (int addr = (frontQ + 1) % ReorderBuffer.size; addr != frontQ; addr = (addr + 1) % ReorderBuffer.size) {
     	if (rob.buff[addr] != null) {
+    		// if writeRegister in buffer matches the source we want
 	    	if (rob.buff[addr].writeReg == inst.regSrc1 && inst.regSrc1Used) {
+	    		// if complete and in reorder buffer still
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc1Value = rob.buff[addr].writeValue;
 	    			inst.regSrc1Valid = true;
-		      		branchTgt = rob.buff[addr].writeValue;
 
+	    			branchTgt = rob.buff[addr].writeValue;
 	    			storeAddr = rob.buff[addr].writeValue;
 	    			storeAddrValid = true;
+	    			
+	    		// if is in rob but isn't complete, must get tag
 	    		} else {
 	    			inst.regSrc1Tag = rob.buff[addr].regDestTag; // set the tag
 	    			branchTgtTag = rob.buff[addr].regDestTag; // for JALR, JR
 	    			inst.regSrc1Valid = false;
+
 	    			storeAddrTag = rob.buff[addr].regDestTag;
 	    			storeAddrValid = false;
+	    			
+	    			// case if on cdb right now but isn't marked complete
 	    			if (rob.simulator.cdb.getDataTag() == inst.regSrc1Tag && rob.simulator.cdb.dataValid) {
 			      		inst.regSrc1Value = rob.simulator.cdb.getDataValue();
 			      		inst.regSrc1Valid = true;
@@ -139,20 +144,22 @@ public class ROBEntry {
 		    			storeAddr = rob.simulator.cdb.getDataValue();
 		    			storeAddrValid = true;
 	    			}
-	    		}	    			
-    			pcUsed1 = rob.buff[addr].instPC;
-
+	    		}	 
 	    	}
+	    	// repeat of source 1
 	    	if (rob.buff[addr].writeReg == inst.regSrc2 && inst.regSrc2Used) {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc2Value = rob.buff[addr].writeValue;
-	    			storeValue = rob.buff[addr].writeValue;
 	    			inst.regSrc2Valid = true;
+
+	    			storeValue = rob.buff[addr].writeValue;
 	    			storeValueValid = true;
 	    		} else {
 	    			inst.regSrc2Tag = rob.buff[addr].regDestTag; // set the tag
+	    			inst.regSrc2Valid = (rob.buff[addr].opcode == IssuedInst.INST_TYPE.STORE); 
+	    			// should be false unless its a store and then this field is bypassed in unit
+
 	    			storeValueTag = rob.buff[addr].regDestTag;
-	    			inst.regSrc2Valid = (rob.buff[addr].opcode == IssuedInst.INST_TYPE.STORE); // should be false unless its a store and then this field is bypassed in unit
 	    			storeValueValid = false;
 	    			if (rob.simulator.cdb.getDataTag() == inst.regSrc2Tag && rob.simulator.cdb.dataValid) {
 			      		inst.regSrc2Value = rob.simulator.cdb.getDataValue();
@@ -161,46 +168,28 @@ public class ROBEntry {
 		    			storeValueValid = true;
 	    			}
 	    		}
-	    		pcUsed2 = rob.buff[addr].instPC;
 
 	    	}
     	}
     }
-    /*
-     * 	      	if (simulator.cdb.getDataTag() == issuee.regSrc1Tag && simulator.cdb.dataValid) {
-	      		issuee.regSrc1Value = simulator.cdb.getDataValue();
-	      		issuee.regSrc1Valid = true;
-	      	}
-	      	if (simulator.cdb.getDataTag() == issuee.regSrc2Tag && simulator.cdb.dataValid) {
-	      		issuee.regSrc2Value = simulator.cdb.getDataValue();
-	      		issuee.regSrc2Valid = true;
-	      	}
-	
-     */
     
     // allows special exception for tagging store/jalr/jal outputs
     regDestTag = inst.regDestTag;
-    regDestUsed = inst.regDestUsed;
-
-    
-//    immediate = inst.immediate;
+    writeReg = inst.regDest;
+    writeValue = inst.pc+4;// defaults to this for jal/jalr
 
     branch = inst.branch;
-    predictTaken = inst.branchPrediction;
-    
-    complete = inst.getOpcode() == IssuedInst.INST_TYPE.J || 
-    		   inst.getOpcode() == IssuedInst.INST_TYPE.JAL ||
-    		   inst.getOpcode() == IssuedInst.INST_TYPE.NOP ||
-    		   inst.getOpcode() == IssuedInst.INST_TYPE.JR && inst.regSrc1Valid ||
-    		   inst.getOpcode() == IssuedInst.INST_TYPE.JALR && inst.regSrc1Valid || 
-    		   inst.getOpcode() == IssuedInst.INST_TYPE.STORE && storeValueValid && storeAddrValid ||
-    		   inst.getOpcode() == IssuedInst.INST_TYPE.HALT;
-    
+    predictTaken = inst.branchPrediction;  
 
-    writeReg = inst.regDest;
     opcode = inst.opcode;
     immediate = inst.immediate;
-    writeValue = inst.pc+4;// defaults to this for jal/jalr
+    complete = inst.getOpcode() == IssuedInst.INST_TYPE.J || 
+ 		   inst.getOpcode() == IssuedInst.INST_TYPE.JAL ||
+ 		   inst.getOpcode() == IssuedInst.INST_TYPE.NOP ||
+ 		   inst.getOpcode() == IssuedInst.INST_TYPE.JR && inst.regSrc1Valid ||
+ 		   inst.getOpcode() == IssuedInst.INST_TYPE.JALR && inst.regSrc1Valid || 
+ 		   inst.getOpcode() == IssuedInst.INST_TYPE.STORE && storeValueValid && storeAddrValid ||
+ 		   inst.getOpcode() == IssuedInst.INST_TYPE.HALT;
 
     // ROB checks the tags and updates if available
     
