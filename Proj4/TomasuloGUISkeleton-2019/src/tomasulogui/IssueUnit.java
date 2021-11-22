@@ -39,7 +39,6 @@ public class IssueUnit {
     		issuee.setBranch();
     	}
     	issued = false;
-    	// Needs to make sure the reorder buffer has space for it
     	if (!simulator.reorder.isFull()) {
 	    	switch (issuee.getOpcode()) {
 	    	case ADD:
@@ -94,13 +93,17 @@ public class IssueUnit {
     	}
     	
     	if (issued) {
+    		// Instruction Decode pretagging
     	 	if (issuee.regSrc1Used) {
 	    		issuee.regSrc1Value = simulator.regs.getReg(issuee.regSrc1);
 	    	}
 	    	if (issuee.regSrc2Used) {
 	    		issuee.regSrc2Value = simulator.regs.getReg(issuee.regSrc2);
 	    	}
-
+	    	// true until we check the tags
+			issuee.regSrc1Valid = true;
+			issuee.regSrc2Valid = true;
+	    	
 	    	// We check the BTB, and put prediction if branch, updating PC
 	    	// puts result from predictBranch
 	    	// if pred taken, incr PC otherwise

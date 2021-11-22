@@ -1,6 +1,6 @@
 /*
  * authors: Aaron Johnston and Rachael Judy
- * file: ROBEntry.java
+ * file: FunctionalUnit.java
  * purpose: This is an abstract class for different functional units (intAlu, intDivide Ect).
  * 			It has the ability to check reservation station ability, as well as squash all reservation stations.
  * 			the exec cycle ensures the station is ready and then calculates the result through the individial FU's
