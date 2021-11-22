@@ -142,9 +142,9 @@ End Assembly
 Begin Data 4000 600
 15
 4
-7
+5
 2
-12
+0
 -5
 20
 51
@@ -153,7 +153,7 @@ Begin Data 4000 600
 23
 4
 5
-3
+2
 0
 -5
 End Data

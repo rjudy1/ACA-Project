@@ -116,10 +116,9 @@ public class ROBEntry {
  
     int pcUsed1 = -1;
     int pcUsed2 = -1;
-    for (int addr = 0; addr < ReorderBuffer.size; addr++) {
+    for (int addr = (frontQ + 1) % ReorderBuffer.size; addr != frontQ; addr = (addr + 1) % ReorderBuffer.size) {
     	if (rob.buff[addr] != null) {
-	    	if (rob.buff[addr].writeReg == inst.regSrc1 && rob.buff[addr].instPC > pcUsed1
-	    			&& rob.buff[addr].instPC < inst.pc	&& inst.regSrc1Used) {
+	    	if (rob.buff[addr].writeReg == inst.regSrc1 && inst.regSrc1Used) {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc1Value = rob.buff[addr].writeValue;
 	    			inst.regSrc1Valid = true;
@@ -127,39 +126,40 @@ public class ROBEntry {
 
 	    			storeAddr = rob.buff[addr].writeValue;
 	    			storeAddrValid = true;
-	    		} else if (rob.simulator.cdb.getDataTag() == inst.regSrc1Tag && rob.simulator.cdb.dataValid) {
-		      		inst.regSrc1Value = rob.simulator.cdb.getDataValue();
-		      		inst.regSrc1Valid = true;
-		      		branchTgt = rob.simulator.cdb.getDataValue();
-	    			storeAddr = rob.simulator.cdb.getDataValue();
-	    			storeAddrValid = true;
 	    		} else {
 	    			inst.regSrc1Tag = rob.buff[addr].regDestTag; // set the tag
 	    			branchTgtTag = rob.buff[addr].regDestTag; // for JALR, JR
 	    			inst.regSrc1Valid = false;
 	    			storeAddrTag = rob.buff[addr].regDestTag;
 	    			storeAddrValid = false;
+	    			if (rob.simulator.cdb.getDataTag() == inst.regSrc1Tag && rob.simulator.cdb.dataValid) {
+			      		inst.regSrc1Value = rob.simulator.cdb.getDataValue();
+			      		inst.regSrc1Valid = true;
+			      		branchTgt = rob.simulator.cdb.getDataValue();
+		    			storeAddr = rob.simulator.cdb.getDataValue();
+		    			storeAddrValid = true;
+	    			}
 	    		}	    			
     			pcUsed1 = rob.buff[addr].instPC;
 
 	    	}
-	    	if (rob.buff[addr].writeReg == inst.regSrc2 && rob.buff[addr].instPC > pcUsed2
-	    			&& rob.buff[addr].instPC < inst.pc && inst.regSrc2Used) {
+	    	if (rob.buff[addr].writeReg == inst.regSrc2 && inst.regSrc2Used) {
 	    		if (rob.buff[addr].isComplete()) {
 	    			inst.regSrc2Value = rob.buff[addr].writeValue;
 	    			storeValue = rob.buff[addr].writeValue;
 	    			inst.regSrc2Valid = true;
-	    			storeValueValid = true;
-	    		} else if (rob.simulator.cdb.getDataTag() == inst.regSrc2Tag && rob.simulator.cdb.dataValid) {
-		      		inst.regSrc2Value = rob.simulator.cdb.getDataValue();
-		      		inst.regSrc2Valid = true;
-	    			storeValue = rob.simulator.cdb.getDataValue();
 	    			storeValueValid = true;
 	    		} else {
 	    			inst.regSrc2Tag = rob.buff[addr].regDestTag; // set the tag
 	    			storeValueTag = rob.buff[addr].regDestTag;
 	    			inst.regSrc2Valid = (rob.buff[addr].opcode == IssuedInst.INST_TYPE.STORE); // should be false unless its a store and then this field is bypassed in unit
 	    			storeValueValid = false;
+	    			if (rob.simulator.cdb.getDataTag() == inst.regSrc2Tag && rob.simulator.cdb.dataValid) {
+			      		inst.regSrc2Value = rob.simulator.cdb.getDataValue();
+			      		inst.regSrc2Valid = true;
+		    			storeValue = rob.simulator.cdb.getDataValue();
+		    			storeValueValid = true;
+	    			}
 	    		}
 	    		pcUsed2 = rob.buff[addr].instPC;
 

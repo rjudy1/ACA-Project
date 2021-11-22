@@ -144,7 +144,8 @@ public class ReorderBuffer {
 			  } else if ((buff[slot].opcode == IssuedInst.INST_TYPE.BEQ || buff[slot].opcode == IssuedInst.INST_TYPE.BNE
 					  || buff[slot].opcode == IssuedInst.INST_TYPE.BLTZ || buff[slot].opcode == IssuedInst.INST_TYPE.BLEZ
 					  || buff[slot].opcode == IssuedInst.INST_TYPE.BGTZ || buff[slot].opcode == IssuedInst.INST_TYPE.BGEZ)
-						  && cdb.getDataTag() == -2) {
+						  && cdb.getDataTag() == -2
+						  && simulator.branchUnit.stations[cdb.getDataValue()].pc == buff[slot].instPC) {
 				  // shorting from branch unit
 				  buff[slot].branchTgt = simulator.branchUnit.stations[cdb.getDataValue()].address;
 				  buff[slot].complete = true;
