@@ -1,3 +1,12 @@
+/*
+ * authors: Aaron Johnston and Rachael Judy
+ * file: BranchUnit.java
+ * purpose: figure out if the branch is taken based on the operands
+ * 			using backdoor to access the branch resolution target and isTaken
+ *  	
+ *  	
+ */
+
 package tomasulogui;
 
 public class BranchUnit
@@ -16,7 +25,8 @@ public class BranchUnit
     	if (!requestWriteback) {
 	       	int operand1 = stations[station].getData1();
 	       	int operand2 = stations[station].getData2();
-	       		       	// ALU 
+	       	
+     		// determine if branch taken
 	       	switch(stations[station].getFunction()) {	
 	       	case BEQ:
 	       		stations[station].isTaken = operand1 == operand2;
@@ -40,9 +50,12 @@ public class BranchUnit
 	   			break;
 	       	}
 	       	
+	       	// set in btb
 	       	simulator.btb.setBranchResult(stations[station].pc, stations[station].isTaken);
-//	       	simulator.getROB().buff[stations[station].destTag].setBranchTaken(stations[station].isTaken);
 	       	
+	       	// if not taken, address will be pc+4, 
+	       	// if taken, address will be address+4+imm
+	       	// only gets used if mispredicted
        		stations[station].address = stations[station].pc + 4;
 	       	if (stations[station].isTaken)
 	       		stations[station].address += stations[station].immediate;

@@ -1,12 +1,10 @@
 /*
- * File: 	IntAlu.java
- * Authors: Aaron Johnston and Rachael Judy
- * Project: ACA Project 4 - Tomasulo
- * Notes:   who gets to say calculateResult?
- * 
- * 
+ * authors: Aaron Johnston and Rachael Judy
+ * file: IntAlu.java
+ * purpose: handle the various alu operations like adds, shifts, etc
+ *  	
+ *  	
  */
-
 package tomasulogui;
 
 
@@ -27,12 +25,14 @@ public class IntAlu extends FunctionalUnit{
 
 
   public int calculateResult(int station) {
-
     if (!requestWriteback) {
+    	// fetch operands from the stations
     	int operand1 = stations[station].getData1();
     	int operand2 = stations[station].getData2();
     	int imm = stations[station].immediate;
+
     	// ALU 
+    	// calculate result and tell CDB we're ready
     	switch(stations[station].getFunction()) {
     	case ADD:
     		destVal = operand1 + operand2;
@@ -40,21 +40,18 @@ public class IntAlu extends FunctionalUnit{
     	case ADDI:
     		destVal = operand1 + imm;
     		break;
-
-    	case STORE:
-//    	case LOAD:
-    		destVal = operand1 + imm;
-    		break;
     	case SUB:
     		destVal = operand1 - operand2; 
     		break;
     	case ANDI:
     		destVal = operand1 & imm;
+    		break;
     	case AND:
     		destVal = operand1 & operand2;
     		break;
     	case OR:
     		destVal = operand1 | operand2;
+    		break;
     	case ORI:
     		destVal = operand1 | imm;
     		break;
